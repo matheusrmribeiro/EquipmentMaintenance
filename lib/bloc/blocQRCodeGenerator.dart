@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:qrcode/classes/equipment.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -13,10 +12,13 @@ class BlocQRCodeGenerator extends BlocBase {
     _room.close();
     _maintenancePeriod.close();
     _nextMaintenance.close();
+    _isRegister.close();
     super.dispose();
   }
 
   final Equipment dataObject = Equipment();
+
+  String getDescription() => dataObject.description;
 
   final BehaviorSubject<Equipment> equipmentController= BehaviorSubject<Equipment>();
   Stream<Equipment> get outEquipmentController => equipmentController.stream;
@@ -41,4 +43,8 @@ class BlocQRCodeGenerator extends BlocBase {
   final BehaviorSubject<DateTime> _nextMaintenance = BehaviorSubject<DateTime>();
   Stream<DateTime> get outNextMaintenance => _nextMaintenance.stream;
   Sink<DateTime> get inNextMaintenance => _nextMaintenance.sink;  
+
+  final BehaviorSubject<bool> _isRegister = BehaviorSubject<bool>.seeded(true);
+  Stream<bool> get outIsRegister => _isRegister.stream;
+  Sink<bool> get inIsRegister => _isRegister.sink;  
 }

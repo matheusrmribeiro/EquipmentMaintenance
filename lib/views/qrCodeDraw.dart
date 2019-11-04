@@ -4,17 +4,18 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:qrcode/classes/equipment.dart';
 
 class QRCodeDraw extends StatelessWidget {
-  QRCodeDraw(this._equipment, this._globalKey);
+  QRCodeDraw(this._equipment, this._globalKey, this.size);
   final Equipment _equipment;
   final GlobalKey _globalKey;
-  final double _qrCodeWidth = 150;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(left: 5, top: 5),
       child: Container(
-        width: _qrCodeWidth,
+        width: size,
+        height: size,
         child: Hero(
           tag: _equipment.id,
           child: RepaintBoundary(
@@ -24,9 +25,6 @@ class QRCodeDraw extends StatelessWidget {
               data: json.encode(_equipment.toJson()),
               version: 6,
               size: 250,
-              /*onError: (ex) {
-                print("[QR] ERROR - $ex");
-              },*/
             ),
           ),
         ),

@@ -5,8 +5,8 @@ import 'package:flutter/rendering.dart';
 import 'package:date_format/date_format.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:qrcode/bloc/blocQRCodeGenerator.dart';
-import 'package:qrcode/classes/equipment.dart';
-import 'package:qrcode/views/qrCodeView.dart';
+import 'package:qrcode/methods/qrCode.dart';
+import 'package:qrcode/views/qrCodeDraw.dart';
 
 class QRCodeGenerator extends StatefulWidget {
   @override
@@ -17,14 +17,13 @@ class QRCodeGeneratorState extends State<QRCodeGenerator> with TickerProviderSta
   final bloc = BlocProvider.getBloc<BlocQRCodeGenerator>();
 
   TabController _controller;
-  QRCodeView _showQRCode;
-  bool _showSaveButton = true;
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     _controller = TabController(vsync: this, length: 2);
+    bloc.inIsRegister.add(true);
   }
 
   @override
@@ -33,42 +32,7 @@ class QRCodeGeneratorState extends State<QRCodeGenerator> with TickerProviderSta
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Gerar QRCode'),
-        actions: <Widget>[
-          (_showSaveButton)
-          ?
-            IconButton(
-              icon: Icon(Icons.save),
-              onPressed: onSave,
-            )
-          :
-            Container()
-        ],
-      ),
-      body: Container(
-        padding: EdgeInsets.only(left: 10, right: 10, top: 10),
-        child: TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          controller: _controller,
-          children: <Widget>[
-            FieldsForm(_formKey),
-            StreamBuilder(
-              stream: bloc.outEquipmentController,
-              builder: (context, snapshot){
-                return QRCodeView(snapshot.data);
-              },
-            ),
-          ],
-        ),
-      )
-    );
-  }
-
-  void onSave() async {
+  void onSave(BuildContext context) async {
     var form = _formKey.currentState;
     if(form.validate()){
       form.save();
@@ -80,13 +44,131 @@ class QRCodeGeneratorState extends State<QRCodeGenerator> with TickerProviderSta
 
       bloc.dataObject.snapToClass(doc);
       
-      /* Verificar isso aqui */
       FocusScope.of(context).requestFocus(FocusNode());
-      _showSaveButton = false;
       _controller.index = 1;
       bloc.inEquipmentController.add(bloc.dataObject);
+      bloc.inIsRegister.add(false);
     }
-  }    
+  } 
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[200],
+      body: SafeArea(
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20)
+                )
+              ),
+              height: 80, 
+              child: Center(
+                child: StreamBuilder(
+                  stream: bloc.outIsRegister,
+                  builder: (context, snapshot){
+                    if (!snapshot.hasData)
+                      return Container();
+                      
+                    return Text((snapshot.data) ? "Equipamento" : bloc.getDescription(),
+                      style: TextStyle(
+                        fontSize: 30,
+                        color: Colors.white
+                      )
+                    );
+                  }    
+                )
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                physics: NeverScrollableScrollPhysics(),
+                controller: _controller,
+                children: <Widget>[
+                  Center(
+                    child: FieldsForm(_formKey)
+                  ),
+                  StreamBuilder(
+                    stream: bloc.outEquipmentController,
+                    builder: (context, snapshot){
+                      return Center(
+                        child: QRCodeDraw(snapshot.data, _formKey, MediaQuery.of(context).size.width*0.7));
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: 300,
+              padding: EdgeInsets.all(10),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    height: 50,
+                    width: 50,
+                    child: Tooltip(
+                      message: "Cancelar",
+                      child: RaisedButton(
+                        padding: EdgeInsets.all(0),
+                        elevation: 4,
+                        color: Colors.white,
+                        onPressed: (){ 
+                          Navigator.pop(context);
+                        },
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
+                        child: Center(child: Icon(Icons.arrow_back, color: Colors.grey,)),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(left: 10),
+                    height: 50,
+                    width: 200,
+                    child: StreamBuilder(
+                      stream: bloc.outIsRegister,
+                      builder: (context, snapshot){
+                        if (!snapshot.hasData)
+                          Container();
+                          
+                        return Tooltip(
+                          message: (snapshot.data) ? "Salvar" : "Compartilhar",
+                          child: RaisedButton(
+                            padding: EdgeInsets.all(0),
+                            color: Theme.of(context).primaryColor,
+                            onPressed: (){ 
+                              if (snapshot.data)
+                                onSave(context);
+                              else {
+                                final qrCode = QRCodeMethods();
+                                qrCode.captureAndSharePng(_formKey, "qrCode.png", bloc.getDescription());
+                              }
+                            },
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(100),
+                                topLeft: Radius.circular(100),
+                                topRight: Radius.circular(100),
+                                bottomRight: Radius.circular(100))),
+                            child: Center(
+                              child: Icon((snapshot.data) ? Icons.save : Icons.share, 
+                                color: Colors.white,)),
+                          ),
+                        );
+                      },
+                    )
+                  )
+                ],
+              ),
+            )            
+          ],
+        ),
+      )
+    );
+  }   
 }
 
 class FieldsForm extends StatelessWidget {
@@ -112,88 +194,91 @@ class FieldsForm extends StatelessWidget {
 
     GlobalKey<FormState> _formKey = formKey;
     
-    return SingleChildScrollView(
-      child: Form(
-        key: _formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            TextFormField(
-              keyboardType: TextInputType.text,
-              decoration: InputDecoration(
-                labelText: 'Descrição',
+    return Container(
+      padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+      child: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              TextFormField(
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  labelText: 'Descrição',
+                ),
+                validator: (value){ return value == "" ? "Obrigatório!" : null;},
+                onSaved: (value) => bloc.dataObject.description = value,
               ),
-              validator: (value){ return value == "" ? "Obrigatório!" : null;},
-              onSaved: (value) => bloc.dataObject.description = value,
-            ),
-            StreamBuilder(
-              stream: bloc.outFloor,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData)
-                  return Container();
-                  
-                return DropdownButtonFormField(
-                  decoration: InputDecoration(
-                      labelText: "Andar"
-                  ),
-                  value: snapshot.data,
-                  items: floorList.map((value) {
-                    return DropdownMenuItem(
-                      value: value,
-                      child: Row(children: <Widget>[Text(value)]),
-                    );
-                  }).toList(),
-                  onChanged: (value) => bloc.inFloor.add(value),
-                  onSaved: (value) => bloc.dataObject.floor = value,
-                  validator: (value){ return value == null ? "Obrigatório!" : null;},
-                );
-              },
-            ),
-            StreamBuilder(
-              stream: bloc.outRoom,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData)
-                  return Container();
-                  
+              StreamBuilder(
+                stream: bloc.outFloor,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData)
+                    return Container();
+                    
                   return DropdownButtonFormField(
-                  decoration: InputDecoration(
-                      labelText: "Sala"
-                  ),
-                  value: snapshot.data,
-                  items: roomList.map((value) {
-                    return DropdownMenuItem(
-                      value: value,
-                      child: Row(children: <Widget>[Text(value)]),
-                    );
-                  }).toList(),
-                  onChanged: (value) => bloc.inRoom.add(value),
-                  onSaved: (value) => bloc.dataObject.room = value,
-                  validator: (value){ return value == null ? "Obrigatório!" : null;},
-                );
-              },
-            ),
-            TextFormField(
-              keyboardType: TextInputType.numberWithOptions(decimal: false),
-              controller: _maintenancePeriodController,
-              decoration: InputDecoration(
-                labelText: 'Tempo de manutenção (dias)',
+                    decoration: InputDecoration(
+                        labelText: "Andar"
+                    ),
+                    value: snapshot.data,
+                    items: floorList.map((value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Row(children: <Widget>[Text(value)]),
+                      );
+                    }).toList(),
+                    onChanged: (value) => bloc.inFloor.add(value),
+                    onSaved: (value) => bloc.dataObject.floor = value,
+                    validator: (value){ return value == null ? "Obrigatório!" : null;},
+                  );
+                },
               ),
-              validator: (value){ return value == "" ? "Obrigatório!" : null;},
-              onSaved: (value) => bloc.dataObject.maintenancePeriod = int.parse(value),
-            ),
-            TextFormField(
-              keyboardType: TextInputType.numberWithOptions(decimal: false),
-              controller: _nextMaintenanceController,
-              enabled: false,
-              decoration: InputDecoration(
-                labelText: 'Próxima manutenção',
+              StreamBuilder(
+                stream: bloc.outRoom,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData)
+                    return Container();
+                    
+                    return DropdownButtonFormField(
+                    decoration: InputDecoration(
+                        labelText: "Sala"
+                    ),
+                    value: snapshot.data,
+                    items: roomList.map((value) {
+                      return DropdownMenuItem(
+                        value: value,
+                        child: Row(children: <Widget>[Text(value)]),
+                      );
+                    }).toList(),
+                    onChanged: (value) => bloc.inRoom.add(value),
+                    onSaved: (value) => bloc.dataObject.room = value,
+                    validator: (value){ return value == null ? "Obrigatório!" : null;},
+                  );
+                },
               ),
-              validator: (value){ return value == "" ? "Obrigatório!" : null;},
-              onSaved: (value) => bloc.dataObject.nextMaintenance = _nextMaintenanceValue,
-            ),
-          ]
-        ),
-      )
+              TextFormField(
+                keyboardType: TextInputType.numberWithOptions(decimal: false),
+                controller: _maintenancePeriodController,
+                decoration: InputDecoration(
+                  labelText: 'Tempo de manutenção (dias)',
+                ),
+                validator: (value){ return value == "" ? "Obrigatório!" : null;},
+                onSaved: (value) => bloc.dataObject.maintenancePeriod = int.parse(value),
+              ),
+              TextFormField(
+                keyboardType: TextInputType.numberWithOptions(decimal: false),
+                controller: _nextMaintenanceController,
+                enabled: false,
+                decoration: InputDecoration(
+                  labelText: 'Próxima manutenção',
+                ),
+                validator: (value){ return value == "" ? "Obrigatório!" : null;},
+                onSaved: (value) => bloc.dataObject.nextMaintenance = _nextMaintenanceValue,
+              ),
+            ]
+          ),
+        )
+      ),
     );
   }
 }
