@@ -6,4 +6,4 @@
 * Basic Firebase authentication
 * Share images
 
-[This project still alive, soon new improvements will be make]
+[This project still alive, soon new improvements will be made]
