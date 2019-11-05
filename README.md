@@ -8,6 +8,10 @@
 
 [This project still alive, soon new improvements will be made]
 
+**Tested on**
+- [X] Android
+- [ ] iOS
+
 ## How to begin (User register it's not available yet on the application)
 1. Create a new Firebase project.
 1. Create a cloud firestore database.
