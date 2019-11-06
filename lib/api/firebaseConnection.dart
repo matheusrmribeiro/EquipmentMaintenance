@@ -36,12 +36,14 @@ class FirebaseConnection{
 
   Future<User> getCurrentUserObject() async {
     User user = User();
-    var objeto = await currentUserObject();
+    FirebaseUser objeto = await currentUserObject();
 
-    DocumentSnapshot document = await Firestore.instance.collection("users").document(objeto.uid).get();
-    if (document.data != null)
-      user.toClass(document.documentID, document.data);
-
+    if (objeto!=null){
+      DocumentSnapshot document = await Firestore.instance.collection("users").document(objeto.uid).get();
+      if (document.data != null)
+        user.toClass(document.documentID, document.data);
+    }
+    
     return user;
   }  
 }

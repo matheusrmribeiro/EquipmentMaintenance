@@ -1,9 +1,9 @@
 import 'dart:ui';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:qrcode/bloc/blocAuth.dart';
-import 'package:qrcode/bloc/blocLogin.dart';
+import '../bloc/blocAuth.dart';
+import '../bloc/blocLogin.dart';
+import '../widgets/customTextFormField.dart';
 
 final formKey = GlobalKey<FormState>();
 
@@ -57,54 +57,37 @@ class Fields extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Card(
-          elevation: 6,
-          margin: EdgeInsets.fromLTRB(15, 5, 15, 5),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50.0),
-          ),
-          child: Container(
-            padding: EdgeInsets.fromLTRB(15, 2, 2, 2),
-            child: TextFormField(
-              key: Key('email'),
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                labelText: 'Email',
-                icon: Icon(Icons.email),
-                border: InputBorder.none,
-              ),
-              style: TextStyle(
-                fontSize: 18
-              ),
-              validator: BlocLogin.validateEmail,
-              onSaved: (value) => bloc.inEmail.add(value),
-            )
-          ),
+        CustomTextForm(
+          textKey: Key('email'),
+          keyboardType: TextInputType.emailAddress,
+          label: 'Email',
+          icon: Icons.email,
+          validator: BlocLogin.validateEmail,
+          onSaved: (value) => bloc.inEmail.add(value),
         ),
-        Card(
-          elevation: 6,
-          margin: EdgeInsets.all(15),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(50.0),
-          ),
+        CustomTextForm(
+          textKey: Key('password'),
+          label: 'Senha',
+          icon: Icons.lock_outline,
+          obscureText: true,
+          validator: BlocLogin.validatePassword,
+          onSaved: (value) => bloc.inPassword.add(value),
+        ),
+        Align(
+          alignment: Alignment.bottomRight,
           child: Container(
-            padding: EdgeInsets.fromLTRB(15, 2, 2, 2),
-            child: TextFormField(
-              key: Key('password'),
-              decoration: InputDecoration(
-                labelText: 'Senha',
-                icon: Icon(Icons.lock_outline),
-                border: InputBorder.none,
+            margin: EdgeInsets.only(right: 20),
+            child: GestureDetector(
+              onTap: (){},
+              child: Text("Esqueceu a senha?",
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Colors.grey[600]
+                ),
               ),
-              style: TextStyle(
-                fontSize: 18
-              ),
-              obscureText: true,
-              validator: BlocLogin.validatePassword,
-              onSaved: (value) => bloc.inPassword.add(value),
             ),
-          )
-        ),
+          ),
+        )
       ]
     );
   }
@@ -165,11 +148,31 @@ class SubmitButtons extends StatelessWidget {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
               ),
             ),
-            FlatButton(
-              child: Text('Criar uma conta', style: TextStyle(fontSize: 20.0)),              
-              onPressed: moveToRegister,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text("Ainda não tem uma conta? "),
+                  GestureDetector(
+                    onTap: (){},
+                    child: Text("Cria conta",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor
+                      )
+                    ),
+                  ),
+                  /*FlatButton(
+                    child: Text('Criar conta', style: TextStyle(fontSize: 20.0)),              
+                    onPressed: moveToRegister,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
+                  ),*/
+                ],
+              ),
+            )
           ],
         );
       },
