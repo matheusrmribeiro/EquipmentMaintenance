@@ -12,38 +12,53 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Material(
-          child: Container(
-            child: SafeArea(
-              child: Form(
-                key: formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget> [
-                    Container(
-                      padding: EdgeInsets.only(top: 60.0),
-                      child: Center(
-                        child: Text("LogScan", 
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor, 
-                            fontSize: 50.0,
-                          )
-                        ),
-                      )
-                    ),              
-                    Expanded(
+    return Material(
+      child: Stack(
+        children: <Widget>[
+          Container(
+            width: 30,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.purple, Colors.red],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              )
+            ),
+          ),
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            body: SafeArea(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(top: 60.0),
+                    child: Center(
+                      child: Text("TITLE", 
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor, 
+                          fontSize: 50.0,
+                        )
+                      ),
+                    )
+                  ),   
+                  Expanded(
+                    child: Form(
+                      key: formKey,
                       child: Fields(),
                     ),
-                    SubmitButtons()
-                  ]
-                ),
+                  ),
+                ],
               )
-            )
-          ) 
-        )
-      ],
+            ),
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: SubmitButtons()
+          )
+        ],
+      ),
     );
   }
 }
@@ -129,14 +144,17 @@ class SubmitButtons extends StatelessWidget {
           return Container();
         
         return Column(
+          //crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Container(
               width: 200,
+              height: 45,
+              margin: EdgeInsets.only(bottom: 15),
               child: RaisedButton(
                 key: Key('signIn'),
                 color: Theme.of(context).primaryColor,
-                elevation: 10.00,
+                elevation: 10,
                 child: Text('Entrar', 
                   style: TextStyle(
                     fontSize: 20.0, 
@@ -165,11 +183,6 @@ class SubmitButtons extends StatelessWidget {
                       )
                     ),
                   ),
-                  /*FlatButton(
-                    child: Text('Criar conta', style: TextStyle(fontSize: 20.0)),              
-                    onPressed: moveToRegister,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
-                  ),*/
                 ],
               ),
             )
