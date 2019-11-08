@@ -25,31 +25,26 @@ class LoginPage extends StatelessWidget {
               )
             ),
           ),
-          Scaffold(
-            backgroundColor: Colors.transparent,
-            body: SafeArea(
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.only(top: 60.0),
-                    child: Center(
-                      child: Text("TITLE", 
-                        style: TextStyle(
-                          color: Theme.of(context).primaryColor, 
-                          fontSize: 50.0,
-                        )
-                      ),
-                    )
-                  ),   
-                  Expanded(
-                    child: Form(
-                      key: formKey,
-                      child: Fields(),
-                    ),
-                  ),
-                ],
+          Fields(),
+          Positioned(
+            top: 40,
+            child: Container(
+              margin: EdgeInsets.only(left: 40),
+              padding: EdgeInsets.only(top: 60.0),
+              child: Text("LogScan", 
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor, 
+                  fontSize: 50.0,
+                )
               )
             ),
+          ),   
+          Positioned(
+            top: 0,
+            right: 0,
+            height: 300,
+            width: 300,
+            child: DecorationCircle(),
           ),
           Positioned(
             bottom: 0,
@@ -68,42 +63,51 @@ class Fields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        CustomTextForm(
-          textKey: Key('email'),
-          keyboardType: TextInputType.emailAddress,
-          label: 'Email',
-          icon: Icons.email,
-          validator: BlocLogin.validateEmail,
-          onSaved: (value) => bloc.inEmail.add(value),
-        ),
-        CustomTextForm(
-          textKey: Key('password'),
-          label: 'Senha',
-          icon: Icons.lock_outline,
-          obscureText: true,
-          validator: BlocLogin.validatePassword,
-          onSaved: (value) => bloc.inPassword.add(value),
-        ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Container(
-            margin: EdgeInsets.only(right: 20),
-            child: GestureDetector(
-              onTap: (){},
-              child: Text("Esqueceu a senha?",
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.grey[600]
-                ),
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Container(
+        //color: Colors.red,
+        child: Form(
+          key: formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              CustomTextForm(
+                textKey: Key('email'),
+                keyboardType: TextInputType.emailAddress,
+                label: 'Email',
+                icon: Icons.email,
+                validator: BlocLogin.validateEmail,
+                onSaved: (value) => bloc.inEmail.add(value),
               ),
-            ),
+              CustomTextForm(
+                textKey: Key('password'),
+                label: 'Senha',
+                icon: Icons.lock_outline,
+                obscureText: true,
+                validator: BlocLogin.validatePassword,
+                onSaved: (value) => bloc.inPassword.add(value),
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  margin: EdgeInsets.only(right: 20),
+                  child: GestureDetector(
+                    onTap: (){},
+                    child: Text("Esqueceu a senha?",
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.grey[600]
+                      ),
+                    ),
+                  ),
+                ),
+              )
+            ]
           ),
-        )
-      ]
+        ),
+      ),
     );
   }
 }
@@ -144,7 +148,6 @@ class SubmitButtons extends StatelessWidget {
           return Container();
         
         return Column(
-          //crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Container(
@@ -190,6 +193,73 @@ class SubmitButtons extends StatelessWidget {
         );
       },
     );
-    
+  }
+}
+
+class DecorationCircle extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Positioned(
+          right: 0,
+          top: 0,
+          child: Container(
+            height: 100,
+            width: 150,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.purple.withOpacity(0.5), Colors.red.withOpacity(0.5)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(0),
+                bottomLeft: Radius.circular(200),
+              )
+            ),
+          ),
+        ),
+        Positioned(
+          right: 0,
+          top: 0,
+          child: Container(
+            height: 100,
+            width: 100,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.purple, Colors.red],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(0),
+                bottomLeft: Radius.circular(200),
+              )
+            ),
+          ),
+        ),
+        Positioned(
+          right: 0,
+          top: 10,
+          child: Container(
+            height: 200,
+            width: 60,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.purple, Colors.red],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                bottomLeft: Radius.circular(200),
+              )
+            ),
+          ),
+        ),
+        
+      ],
+    );
   }
 }
