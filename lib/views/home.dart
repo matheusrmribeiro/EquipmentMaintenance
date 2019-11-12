@@ -11,6 +11,8 @@ import 'package:qrcode/methods.dart';
 import 'package:qrcode/views/equipmentDetails.dart';
 import 'package:qrcode/views/qrCodeGenerator.dart';
 
+import 'settings.dart';
+
 class Home extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -28,11 +30,21 @@ class Home extends StatelessWidget{
       floatingActionButton: SpeedDial(
         animatedIcon: AnimatedIcons.menu_close,
         overlayOpacity: 0.1,
-        overlayColor: Colors.red,
+        overlayColor: Theme.of(context).primaryColor,
         tooltip: "Ações",
         children: [
           SpeedDialChild(
+            label: "Configurações",
+            labelBackgroundColor: Theme.of(context).accentColor,
+            child: Icon(Icons.settings),
+            onTap: (){
+              Navigation navigation = Navigation();
+              navigation.navigaTo(context, Settings());
+            },
+          ),
+          SpeedDialChild(
             label: "Ler QRCode",
+            labelBackgroundColor: Theme.of(context).accentColor,
             child: Icon(Icons.settings_overscan),
             onTap: (){
               Navigation navigation = Navigation();
@@ -41,6 +53,7 @@ class Home extends StatelessWidget{
           ),
           SpeedDialChild(
             label: "Novo equipamento",
+            labelBackgroundColor: Theme.of(context).accentColor,
             child: Icon(Icons.add),
             onTap: (){
               Navigation navigation = Navigation();
@@ -55,7 +68,7 @@ class Home extends StatelessWidget{
 
 class Header extends StatelessWidget {
   final bloc = BlocProvider.getBloc<BlocAuth>();
-  PeriodoDia periodo = PeriodoDia();
+  final PeriodoDia periodo = PeriodoDia();
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +79,7 @@ class Header extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(bottomRight: Radius.circular(20), bottomLeft: Radius.circular(20)),
-          color: Colors.red,
+          color: Theme.of(context).primaryColor,
         ),
         child: SafeArea(
           child: Container(

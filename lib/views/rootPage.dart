@@ -1,8 +1,9 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
-import 'package:qrcode/bloc/blocAuth.dart';
-import 'package:qrcode/views/home.dart';
-import 'package:qrcode/views/login.dart';
+import '../bloc/blocAuth.dart';
+import '../bloc/blocThemes.dart';
+import '../views/home.dart';
+import '../views/login.dart';
 
 class RootPage extends StatefulWidget {
   @override
@@ -10,6 +11,28 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
+  final blocThemes = BlocProvider.getBloc<BlocThemes>();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder(
+      initialData: ApplicationTheme.lightTheme,
+      stream: blocThemes.outTheme,
+      builder: (context, snapshot){
+        if (!snapshot.hasData)
+          return Container();
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'Maintenance Control',
+          theme: blocThemes.currentTheme(),
+          home: PageController()
+        );
+      },
+    ); 
+  }
+}
+
+class PageController extends StatelessWidget {
   final bloc = BlocProvider.getBloc<BlocAuth>();
 
   @override

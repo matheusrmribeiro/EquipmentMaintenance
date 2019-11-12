@@ -4,9 +4,9 @@ import 'package:qrcode/bloc/blocAuth.dart';
 import 'package:qrcode/bloc/blocEquipment.dart';
 import 'package:qrcode/bloc/blocLogin.dart';
 import 'package:qrcode/bloc/blocQRCodeGenerator.dart';
+import 'package:qrcode/bloc/blocThemes.dart';
 import 'package:qrcode/views/rootPage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'methods.dart' as global;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,17 +22,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       blocs: [ 
+        Bloc((i) => BlocThemes()), 
         Bloc((i) => BlocAuth()), 
         Bloc((i) => BlocLogin()), 
         Bloc((i) => BlocEquipment()), 
         Bloc((i) => BlocQRCodeGenerator()),
       ],
-      child: MaterialApp(
-        title: 'Maintenance Control',
-        debugShowCheckedModeBanner: false,
-        theme: global.lightTheme,
-        home: RootPage()
-      )
+      child: RootPage()
     );
   }
 }

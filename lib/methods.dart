@@ -3,10 +3,6 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 
-final lightTheme = ThemeData(
-  primarySwatch: Colors.red,
-);
-
 class Navigation {
   Future<bool> navigaToLogin(context, menu) async {
     var navigation = await Navigator.push(context, MaterialPageRoute(builder: (context) => menu,));

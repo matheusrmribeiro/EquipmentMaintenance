@@ -15,30 +15,6 @@ class LoginPage extends StatelessWidget {
     return Material(
       child: Stack(
         children: <Widget>[
-          Container(
-            width: 30,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.purple, Colors.red],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              )
-            ),
-          ),
-          Fields(),
-          Positioned(
-            top: 40,
-            child: Container(
-              margin: EdgeInsets.only(left: 40),
-              padding: EdgeInsets.only(top: 60.0),
-              child: Text("LogScan", 
-                style: TextStyle(
-                  color: Theme.of(context).primaryColor, 
-                  fontSize: 50.0,
-                )
-              )
-            ),
-          ),   
           Positioned(
             top: 0,
             right: 0,
@@ -46,6 +22,37 @@ class LoginPage extends StatelessWidget {
             width: 300,
             child: DecorationCircle(),
           ),
+          Positioned(
+            left: 0,
+            top: 0,
+            height: MediaQuery.of(context).size.height,
+            child: Container(
+              width: 30,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.purple, Colors.red],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                )
+              ),
+            ),
+          ),
+          Positioned(
+            left: 25,
+            top: 110,
+            child: Container(
+              margin: EdgeInsets.only(left: 40, bottom: 55),
+              child: Text("LogScan", 
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor, 
+                  fontSize: 50.0,
+                  fontFamily: "RobotoMono",
+                  fontWeight: FontWeight.w500
+                )
+              )
+            ),
+          ),          
+          Fields(),
           Positioned(
             bottom: 0,
             left: 0,
@@ -65,46 +72,50 @@ class Fields extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Container(
-        //color: Colors.red,
-        child: Form(
-          key: formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              CustomTextForm(
-                textKey: Key('email'),
-                keyboardType: TextInputType.emailAddress,
-                label: 'Email',
-                icon: Icons.email,
-                validator: BlocLogin.validateEmail,
-                onSaved: (value) => bloc.inEmail.add(value),
-              ),
-              CustomTextForm(
-                textKey: Key('password'),
-                label: 'Senha',
-                icon: Icons.lock_outline,
-                obscureText: true,
-                validator: BlocLogin.validatePassword,
-                onSaved: (value) => bloc.inPassword.add(value),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Container(
-                  margin: EdgeInsets.only(right: 20),
-                  child: GestureDetector(
-                    onTap: (){},
-                    child: Text("Esqueceu a senha?",
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.grey[600]
+      body: SingleChildScrollView(
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Container(
+            margin: EdgeInsets.only(top: 80),
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  CustomTextForm(
+                    textKey: Key('email'),
+                    keyboardType: TextInputType.emailAddress,
+                    label: 'Email',
+                    icon: Icons.email,
+                    validator: BlocLogin.validateEmail,
+                    onSaved: (value) => bloc.inEmail.add(value),
+                  ),
+                  CustomTextForm(
+                    textKey: Key('password'),
+                    label: 'Senha',
+                    icon: Icons.lock_outline,
+                    obscureText: true,
+                    validator: BlocLogin.validatePassword,
+                    onSaved: (value) => bloc.inPassword.add(value),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                    child: Container(
+                      margin: EdgeInsets.only(right: 20),
+                      child: GestureDetector(
+                        onTap: (){},
+                        child: Text("Esqueceu a senha?",
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.grey[600]
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              )
-            ]
+                  )
+                ]
+              ),
+            ),
           ),
         ),
       ),
@@ -219,7 +230,26 @@ class DecorationCircle extends StatelessWidget {
               )
             ),
           ),
-        ),
+        ),        
+        Positioned(
+          right: 0,
+          top: 10,
+          child: Container(
+            height: 200,
+            width: 60,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.purple, Colors.red],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(10),
+                bottomLeft: Radius.circular(200),
+              )
+            ),
+          ),
+        ),        
         Positioned(
           right: 0,
           top: 0,
@@ -239,26 +269,6 @@ class DecorationCircle extends StatelessWidget {
             ),
           ),
         ),
-        Positioned(
-          right: 0,
-          top: 10,
-          child: Container(
-            height: 200,
-            width: 60,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.purple, Colors.red],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10),
-                bottomLeft: Radius.circular(200),
-              )
-            ),
-          ),
-        ),
-        
       ],
     );
   }
