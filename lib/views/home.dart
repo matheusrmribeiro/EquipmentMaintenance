@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:qrcode/bloc/blocAuth.dart';
 import 'package:qrcode/bloc/blocEquipment.dart';
 import 'package:qrcode/classes/equipment.dart';
@@ -10,7 +11,6 @@ import 'package:qrcode/globals.dart';
 import 'package:qrcode/methods.dart';
 import 'package:qrcode/views/equipmentDetails.dart';
 import 'package:qrcode/views/qrCodeGenerator.dart';
-
 import 'settings.dart';
 
 class Home extends StatelessWidget{
@@ -33,7 +33,7 @@ class Home extends StatelessWidget{
         overlayColor: Theme.of(context).primaryColor,
         tooltip: "Ações",
         children: [
-          SpeedDialChild(
+          /*SpeedDialChild(
             label: "Configurações",
             labelBackgroundColor: Theme.of(context).accentColor,
             child: Icon(Icons.settings),
@@ -41,7 +41,7 @@ class Home extends StatelessWidget{
               Navigation navigation = Navigation();
               navigation.navigaTo(context, Settings());
             },
-          ),
+          ),*/
           SpeedDialChild(
             label: "Ler QRCode",
             labelBackgroundColor: Theme.of(context).accentColor,
@@ -87,29 +87,53 @@ class Header extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Center(
-                  child: Column(
-                    children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Text(periodo.descricao()+ ", ",
+                        style: TextStyle(
+                          color: Colors.grey[200],
+                          fontSize: 25,
+                        ),
+                      ),
                       StreamBuilder(
                         stream: bloc.outAuthStatus,
                         builder: (context, snapshot){
                           return Text(bloc.currentUser.nickname??"Matheus",
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 20,
+                              fontSize: 25,
                             ),
                           );
                         },
                       ),
-                      Text(periodo.descricao(),
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
+                      ],
+                    ),
+                    Tooltip(
+                      message: "Conta",
+                      child: Container(
+                        margin: EdgeInsets.only(right: 5),
+                        child: PopupMenuButton(
+                          icon: Icon(FontAwesomeIcons.userCog),
+                          itemBuilder: (_) => <PopupMenuItem<String>>[
+                            PopupMenuItem<String>( child: const Text('Sair'), value: 'exit'),
+                            PopupMenuItem<String>( child: const Text('Configurações'), value: 'settings'),
+                          ],
+                          onSelected: (value){
+                            if (value=='exit')
+                              bloc.signedOut();
+                            else if (value=='settings') {
+                              Navigation navigation = Navigation();
+                              navigation.navigaTo(context, Settings());
+                            }
+                          },
                         ),
                       ),
-                    ],
-                  ),
-                )
+                    )
+                  ],
+                ),
               ],
             ),
           ),

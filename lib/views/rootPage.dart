@@ -16,7 +16,6 @@ class _RootPageState extends State<RootPage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      initialData: ApplicationTheme.lightTheme,
       stream: blocThemes.outTheme,
       builder: (context, snapshot){
         if (!snapshot.hasData)

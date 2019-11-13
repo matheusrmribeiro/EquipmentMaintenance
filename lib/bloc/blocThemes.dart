@@ -1,6 +1,7 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import '../api/localSettings.dart';
 
 enum ApplicationTheme {
   lightTheme,
@@ -8,6 +9,21 @@ enum ApplicationTheme {
 }
 
 class BlocThemes extends BlocBase {
+  LocalSettings settings = LocalSettings();
+
+  BlocThemes(){
+    getInitialValues();
+    _themeController.stream.listen((data){
+      settings.preferences.setInt('theme', data.index);
+    });
+  }
+
+  void getInitialValues() async{
+    await settings.getInstance();
+    if (settings.preferences.containsKey('theme'))
+      inTheme.add(ApplicationTheme.values[settings.preferences.getInt('theme')]);
+  }
+
   @override
   void dispose() {
     _themeController.close();
@@ -39,7 +55,7 @@ class BlocThemes extends BlocBase {
   void selectTheme(ApplicationTheme theme) => inTheme.add(theme);
   ApplicationTheme selectedTheme() => _themeController.value;
 
-  final BehaviorSubject<ApplicationTheme> _themeController = BehaviorSubject<ApplicationTheme>.seeded(ApplicationTheme.lightTheme);
+  final BehaviorSubject<ApplicationTheme> _themeController = BehaviorSubject<ApplicationTheme>();
   Stream<ApplicationTheme> get outTheme => _themeController.stream;
   Sink<ApplicationTheme> get inTheme => _themeController.sink;
 }
