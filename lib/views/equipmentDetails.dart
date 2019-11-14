@@ -1,16 +1,14 @@
-import 'dart:convert';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-import 'package:qrcode/bloc/blocEquipment.dart';
-import 'package:qrcode/classes/equipment.dart';
-import 'package:qrcode/methods/qrCode.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import '../bloc/blocEquipment.dart';
+import '../classes/equipment.dart';
+import '../methods/qrCode.dart';
+import 'qrCodeDraw.dart';
 
-/* Fazer constructor aqui para abrir direto no leitor para quando for busca por QRCode */
 class EquipmentDetails extends StatelessWidget{
-
   EquipmentDetails(this.equipment);
 
   final Equipment equipment;
@@ -26,10 +24,6 @@ class EquipmentDetails extends StatelessWidget{
       appBar: AppBar(
         title: Text('Detalhes do equipamento'),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.border_color),
-        onPressed: () => bloc.newMaintenance(),
-      ),
       body: StreamBuilder(
         stream: bloc.outEquipmentController,
         builder: (context, snapshot){
@@ -42,6 +36,29 @@ class EquipmentDetails extends StatelessWidget{
           else
             return Container();
         },
+      ),
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        overlayOpacity: 0.1,
+        overlayColor: Theme.of(context).primaryColor,
+        tooltip: "Ações",
+        children: [
+          SpeedDialChild(
+            label: "Nova manutenção",
+            labelBackgroundColor: Theme.of(context).accentColor,
+            child: Icon(Icons.border_color),
+            onTap: () => bloc.newMaintenance(),
+          ),
+          SpeedDialChild(
+            label: "Compartilhar",
+            labelBackgroundColor: Theme.of(context).accentColor,
+            child: Icon(Icons.share),
+            onTap: (){
+              final QRCodeMethods qrCode = QRCodeMethods();
+              qrCode.captureAndSharePng(Body.getKey(), "qrCode.png", Body.equipment.description);
+            },
+          )
+        ],
       )
     );
   }
@@ -53,12 +70,14 @@ class EquipmentDetails extends StatelessWidget{
 }
 
 class Body extends StatelessWidget {
-  Body(this._equipment);
+  Body(Equipment _equipment){
+    equipment = _equipment;
+  }
   
-  final Equipment _equipment;
-  final _qrCodeWidth = 150;
-  GlobalKey globalKey = GlobalKey();
-  final QRCodeMethods qrCode = QRCodeMethods();
+  static GlobalKey getKey() => globalKey;
+
+  static Equipment equipment;
+  static GlobalKey globalKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -67,55 +86,66 @@ class Body extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(top: 10),
+                  child: QRCodeDraw(equipment, globalKey, 150)
+                ),
+                Text(equipment.name,
+                  softWrap: true,
+                  style: TextStyle(fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  )
+                ),
+              ],
+            ),
+          ),
+          Container(
             padding: EdgeInsets.only(bottom: 5),
             height: 160,
             child: Row(
+              mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                DrawQRCode(_equipment, globalKey),
                 Container(
-                  width: (MediaQuery.of(context).size.width - _qrCodeWidth - 5),
-                  padding: EdgeInsets.only(left: 5, right: 5),
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.only(left: 5, right: 5, top: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(_equipment.description,
-                        softWrap: true,
-                        style: TextStyle(fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        )
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Text("Andar:"),
-                          Expanded(child: Container()),
-                          Text(_equipment.floor)
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Text("Sala:"),
-                          Expanded(child: Container()),
-                          Text(_equipment.room)
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Text("Manutenção:"),
-                          Expanded(child: Container()),
-                          Text(formatDate(_equipment.nextMaintenance, ["dd", "/", "mm", "/", "yyyy"]))
-                        ],
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 16),
-                        child: Center(
-                          child: RaisedButton(
-                            color: Theme.of(context).primaryColor,
-                            onPressed: () { qrCode.captureAndSharePng(globalKey, "qrCode.png", _equipment.description); },
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-                            child: Text("Compartilhar", style: TextStyle(color: Colors.white),),
+                      Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: Text("Localização",
+                          softWrap: true,
+                          style: TextStyle(fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey
                           )
                         ),
-                      )
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text("Andar:"),
+                          Text(equipment.floor)
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text("Sala:"),
+                          Text(equipment.room)
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text("Manutenção:"),
+                          Text(formatDate(equipment.nextMaintenance, ["dd", "/", "mm", "/", "yyyy"]))
+                        ],
+                      ),
                     ],
                   ),
                 )
@@ -123,14 +153,17 @@ class Body extends StatelessWidget {
             ),
           ),
           Container(
-            color: Colors.grey.withOpacity(0.6),
-            height: 30,
-            child: Center(
-              child: Text("Log de manutenções", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+            margin: EdgeInsets.only(left: 5, right: 5, bottom: 10),
+            child: Text("Últimas manutenções",
+              softWrap: true,
+              style: TextStyle(fontSize: 20,
+                fontWeight: FontWeight.w500,
+                color: Colors.grey
+              )
             ),
           ),
           Expanded(
-            child: LogList(_equipment.id)
+            child: LogList(equipment.id)
           )
         ]
       )
@@ -169,47 +202,36 @@ class LogItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Timestamp date = item["date"];
-
     String subtitle = item["inPeriod"] ? "Feito no prazo" : "Feito fora do prazo";
+    String description = item["description"];
 
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-            bottom: BorderSide(color: Colors.grey)
-        )
-      ),
+    return Card(
       child: ListTile(
-        title: Text(formatDate(date.toDate(), ["dd", "/", "mm", "/", "yyyy"])),
-        subtitle: Text(subtitle),
-        onTap: (){},
-      ),
-    );
-  }
-}
-
-class DrawQRCode extends StatelessWidget {
-  DrawQRCode(this._equipment, this._globalKey);
-  final Equipment _equipment;
-  final GlobalKey _globalKey;
-  final double _qrCodeWidth = 150;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(left: 5, top: 5),
-      child: Container(
-        width: _qrCodeWidth,
-        child: Hero(
-          tag: _equipment.id,
-          child: RepaintBoundary(
-            key: _globalKey,
-            child: QrImage(
-              backgroundColor: Colors.grey,
-              data: json.encode(_equipment.toJson()),
-              size: 250,
+        title: Row(
+          children: <Widget>[
+            Text(formatDate(date.toDate(), ["dd", "/", "mm", "/", "yyyy"]),
+              softWrap: true,
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.grey
+              )
             ),
-          ),
+            Text(" - "+ subtitle,
+              softWrap: true,
+              style: TextStyle(
+                color: Colors.grey
+              )
+            )
+          ],
         ),
+        subtitle: Text(description??"",
+          softWrap: true,
+          style: TextStyle(
+            fontWeight: FontWeight.w500,
+            color: Colors.grey
+          )
+        ),
+        onTap: (){},
       ),
     );
   }

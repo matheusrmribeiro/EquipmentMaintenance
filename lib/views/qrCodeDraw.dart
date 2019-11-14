@@ -14,6 +14,9 @@ class QRCodeDraw extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(left: 5, top: 5),
       child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: Theme.of(context).primaryColor, width: 3)
+        ),
         width: size,
         height: size,
         child: Hero(
@@ -21,10 +24,8 @@ class QRCodeDraw extends StatelessWidget {
           child: RepaintBoundary(
             key: _globalKey,
             child: QrImage(
-              backgroundColor: Colors.grey,
+              foregroundColor: Theme.of(context).primaryColor,
               data: json.encode(_equipment.toJson()),
-              version: 6,
-              size: 250,
             ),
           ),
         ),

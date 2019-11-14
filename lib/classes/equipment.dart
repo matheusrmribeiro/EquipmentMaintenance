@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class Equipment{
   String id;
+  String name;
   String description;
   String floor;
   String room;
@@ -12,6 +13,7 @@ class Equipment{
   Map<String, dynamic> toJson({bool removeId = false, bool useTimestamp = false}) {
     var data = {
       "id": "$id",
+      "name": "$name",
       "description": "$description",
       "floor": "$floor",
       "room": "$room",
@@ -29,6 +31,7 @@ class Equipment{
     Timestamp timestamp = doc.data["nextMaintenance"];
 
     id                = doc.documentID;
+    name              = doc.data["name"];
     description       = doc.data["description"];
     floor             = doc.data["floor"];
     room              = doc.data["room"];
@@ -38,6 +41,7 @@ class Equipment{
 
   void jsonToClass(Map<String, dynamic> json){
     id                = json["id"];
+    name              = json["name"];
     description       = json["description"];
     floor             = json["floor"];
     room              = json["room"];

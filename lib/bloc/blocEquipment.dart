@@ -38,6 +38,7 @@ class BlocEquipment extends BlocBase {
     final inPeriod = DateTime.now().isBefore(_equipmentController.value.nextMaintenance);
 
     Map<String, dynamic> newMaintenance = {
+      "description": "Usar um popup para preencher aqui",
       "equipment": _equipmentController.value.id,
       "date": DateTime.now(),
       "inPeriod": inPeriod

@@ -7,6 +7,7 @@ class BlocQRCodeGenerator extends BlocBase {
   @override
   void dispose() {
     equipmentController.close();
+    _name.close();
     _description.close();
     _floor.close();
     _room.close();
@@ -27,6 +28,10 @@ class BlocQRCodeGenerator extends BlocBase {
   final BehaviorSubject<String> _description = BehaviorSubject<String>.seeded("");
   Stream<String> get outDescription => _description.stream;
   Sink<String> get inDescription => _description.sink;
+
+  final BehaviorSubject<String> _name = BehaviorSubject<String>.seeded("");
+  Stream<String> get outName => _name.stream;
+  Sink<String> get inName => _name.sink;
 
   final BehaviorSubject<String> _floor = BehaviorSubject<String>.seeded("1");
   Stream<String> get outFloor => _floor.stream;

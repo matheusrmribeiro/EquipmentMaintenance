@@ -33,15 +33,6 @@ class Home extends StatelessWidget{
         overlayColor: Theme.of(context).primaryColor,
         tooltip: "Ações",
         children: [
-          /*SpeedDialChild(
-            label: "Configurações",
-            labelBackgroundColor: Theme.of(context).accentColor,
-            child: Icon(Icons.settings),
-            onTap: (){
-              Navigation navigation = Navigation();
-              navigation.navigaTo(context, Settings());
-            },
-          ),*/
           SpeedDialChild(
             label: "Ler QRCode",
             labelBackgroundColor: Theme.of(context).accentColor,
@@ -111,25 +102,23 @@ class Header extends StatelessWidget {
                       ),
                       ],
                     ),
-                    Tooltip(
-                      message: "Conta",
-                      child: Container(
-                        margin: EdgeInsets.only(right: 5),
-                        child: PopupMenuButton(
-                          icon: Icon(FontAwesomeIcons.userCog),
-                          itemBuilder: (_) => <PopupMenuItem<String>>[
-                            PopupMenuItem<String>( child: const Text('Sair'), value: 'exit'),
-                            PopupMenuItem<String>( child: const Text('Configurações'), value: 'settings'),
-                          ],
-                          onSelected: (value){
-                            if (value=='exit')
-                              bloc.signedOut();
-                            else if (value=='settings') {
-                              Navigation navigation = Navigation();
-                              navigation.navigaTo(context, Settings());
-                            }
-                          },
-                        ),
+                    Container(
+                      margin: EdgeInsets.only(right: 5),
+                      child: PopupMenuButton(
+                        tooltip: "Conta",
+                        icon: Icon(FontAwesomeIcons.userCog),
+                        itemBuilder: (_) => <PopupMenuItem<String>>[
+                          PopupMenuItem<String>( child: const Text('Sair'), value: 'exit'),
+                          PopupMenuItem<String>( child: const Text('Configurações'), value: 'settings'),
+                        ],
+                        onSelected: (value){
+                          if (value=='exit')
+                            bloc.signedOut();
+                          else if (value=='settings') {
+                            Navigation navigation = Navigation();
+                            navigation.navigaTo(context, Settings());
+                          }
+                        },
                       ),
                     )
                   ],
@@ -217,7 +206,7 @@ class EquipmentItem extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(_equipment.description, 
+                              Text(_equipment.name, 
                                 style: TextStyle(
                                   fontSize: 20, 
                                   color: Colors.grey[700],

@@ -204,6 +204,14 @@ class FieldsForm extends StatelessWidget {
               TextFormField(
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
+                  labelText: 'Nome',
+                ),
+                validator: (value){ return value == "" ? "Obrigatório!" : null;},
+                onSaved: (value) => bloc.dataObject.name = value,
+              ),
+              TextFormField(
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
                   labelText: 'Descrição',
                 ),
                 validator: (value){ return value == "" ? "Obrigatório!" : null;},
