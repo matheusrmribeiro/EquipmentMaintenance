@@ -22,6 +22,8 @@ class BlocThemes extends BlocBase {
     await settings.getInstance();
     if (settings.preferences.containsKey('theme'))
       inTheme.add(ApplicationTheme.values[settings.preferences.getInt('theme')]);
+    else
+      inTheme.add(ApplicationTheme.lightTheme);
   }
 
   @override

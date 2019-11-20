@@ -7,6 +7,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:qrcode/bloc/blocQRCodeGenerator.dart';
 import 'package:qrcode/methods/qrCode.dart';
 import 'package:qrcode/views/qrCodeDraw.dart';
+import 'package:qrcode/widgets/customDropdownButtonFormField.dart';
+import 'package:qrcode/widgets/customTextFormField.dart';
 
 class QRCodeGenerator extends StatefulWidget {
   @override
@@ -45,9 +47,9 @@ class QRCodeGeneratorState extends State<QRCodeGenerator> with TickerProviderSta
       bloc.dataObject.snapToClass(doc);
       
       FocusScope.of(context).requestFocus(FocusNode());
-      _controller.index = 1;
       bloc.inEquipmentController.add(bloc.dataObject);
       bloc.inIsRegister.add(false);
+      _controller.index = 1;
     }
   } 
 
@@ -94,8 +96,12 @@ class QRCodeGeneratorState extends State<QRCodeGenerator> with TickerProviderSta
                   StreamBuilder(
                     stream: bloc.outEquipmentController,
                     builder: (context, snapshot){
+                      if (!snapshot.hasData)
+                        return Container();
+
                       return Center(
-                        child: QRCodeDraw(snapshot.data, _formKey, MediaQuery.of(context).size.width*0.7));
+                        child: QRCodeDraw(snapshot.data, _formKey, MediaQuery.of(context).size.width*0.7)
+                      );
                     },
                   ),
                 ],
@@ -181,39 +187,35 @@ class FieldsForm extends StatelessWidget {
 
   final TextEditingController _nextMaintenanceController =  TextEditingController();
   final TextEditingController _maintenancePeriodController =  TextEditingController();
-  DateTime _nextMaintenanceValue;
 
   @override
   Widget build(BuildContext context) {
+    DateTime _nextMaintenanceValue;
+    GlobalKey<FormState> _formKey = formKey;
+
     _maintenancePeriodController.addListener((){
       DateTime date = DateTime.now();
       _nextMaintenanceValue = date.add(Duration(days: int.parse(_maintenancePeriodController.text)));
       _nextMaintenanceController.text = formatDate(_nextMaintenanceValue, ["dd", "/", "mm", "/", "yyyy"]);
     });
 
-    GlobalKey<FormState> _formKey = formKey;
-    
     return Container(
-      padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+      padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
       child: SingleChildScrollView(
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              TextFormField(
+              CTextFormField(
                 keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  labelText: 'Nome',
-                ),
+                labelText: 'Nome',
                 validator: (value){ return value == "" ? "Obrigatório!" : null;},
                 onSaved: (value) => bloc.dataObject.name = value,
               ),
-              TextFormField(
+              CTextFormField(
                 keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                  labelText: 'Descrição',
-                ),
+                labelText: 'Descrição',
                 validator: (value){ return value == "" ? "Obrigatório!" : null;},
                 onSaved: (value) => bloc.dataObject.description = value,
               ),
@@ -223,10 +225,8 @@ class FieldsForm extends StatelessWidget {
                   if (!snapshot.hasData)
                     return Container();
                     
-                  return DropdownButtonFormField(
-                    decoration: InputDecoration(
-                        labelText: "Andar"
-                    ),
+                  return CDropdownButtonFormField(
+                    labelText: "Andar",
                     value: snapshot.data,
                     items: floorList.map((value) {
                       return DropdownMenuItem(
@@ -246,10 +246,8 @@ class FieldsForm extends StatelessWidget {
                   if (!snapshot.hasData)
                     return Container();
                     
-                    return DropdownButtonFormField(
-                    decoration: InputDecoration(
-                        labelText: "Sala"
-                    ),
+                    return CDropdownButtonFormField(
+                    labelText: "Sala",
                     value: snapshot.data,
                     items: roomList.map((value) {
                       return DropdownMenuItem(
@@ -263,22 +261,18 @@ class FieldsForm extends StatelessWidget {
                   );
                 },
               ),
-              TextFormField(
+              CTextFormField(
                 keyboardType: TextInputType.numberWithOptions(decimal: false),
                 controller: _maintenancePeriodController,
-                decoration: InputDecoration(
-                  labelText: 'Tempo de manutenção (dias)',
-                ),
+                labelText: 'Tempo de manutenção (dias)',
                 validator: (value){ return value == "" ? "Obrigatório!" : null;},
                 onSaved: (value) => bloc.dataObject.maintenancePeriod = int.parse(value),
               ),
-              TextFormField(
+              CTextFormField(
                 keyboardType: TextInputType.numberWithOptions(decimal: false),
                 controller: _nextMaintenanceController,
                 enabled: false,
-                decoration: InputDecoration(
-                  labelText: 'Próxima manutenção',
-                ),
+                labelText: 'Próxima manutenção',
                 validator: (value){ return value == "" ? "Obrigatório!" : null;},
                 onSaved: (value) => bloc.dataObject.nextMaintenance = _nextMaintenanceValue,
               ),

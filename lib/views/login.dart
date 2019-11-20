@@ -1,8 +1,10 @@
 import 'dart:ui';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:flutter/material.dart';
+import 'registerUser.dart';
 import '../bloc/blocAuth.dart';
 import '../bloc/blocLogin.dart';
+import '../methods.dart';
 import '../widgets/customTextFormField.dart';
 
 final formKey = GlobalKey<FormState>();
@@ -44,7 +46,7 @@ class LoginPage extends StatelessWidget {
               margin: EdgeInsets.only(left: 40, bottom: 55),
               child: Text("LogScan", 
                 style: TextStyle(
-                  color: Theme.of(context).primaryColor, 
+                  color: Colors.red,//Theme.of(context).primaryColor, 
                   fontSize: 50.0,
                   fontFamily: "RobotoMono",
                   fontWeight: FontWeight.w500
@@ -82,18 +84,20 @@ class Fields extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  CustomTextForm(
+                  CTextFormField(
                     textKey: Key('email'),
                     keyboardType: TextInputType.emailAddress,
-                    label: 'Email',
-                    icon: Icons.email,
+                    labelText: 'Email',
+                    icon: Icon(Icons.email),
+                    margin: EdgeInsets.all(15),
                     validator: BlocLogin.validateEmail,
                     onSaved: (value) => bloc.inEmail.add(value),
                   ),
-                  CustomTextForm(
+                  CTextFormField(
                     textKey: Key('password'),
-                    label: 'Senha',
-                    icon: Icons.lock_outline,
+                    labelText: 'Senha',
+                    icon: Icon(Icons.lock_outline),
+                    margin: EdgeInsets.all(15),
                     obscureText: true,
                     validator: BlocLogin.validatePassword,
                     onSaved: (value) => bloc.inPassword.add(value),
@@ -188,8 +192,11 @@ class SubmitButtons extends StatelessWidget {
                 children: <Widget>[
                   Text("Ainda não tem uma conta? "),
                   GestureDetector(
-                    onTap: (){},
-                    child: Text("Cria conta",
+                    onTap: (){
+                      Navigation navigator = Navigation();
+                      navigator.navigaTo(context, RegisterUser());
+                    },
+                    child: Text("Criar conta",
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,

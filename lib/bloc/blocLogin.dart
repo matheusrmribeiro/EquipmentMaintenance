@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:qrcode/bloc/blocAuth.dart';
-import 'package:qrcode/classes/user.dart';
 import 'package:rxdart/rxdart.dart';
 
 enum ActionType {
@@ -47,14 +46,12 @@ class BlocLogin extends BlocBase {
   void submitLogIn(BlocAuth blocAuth) async {
     try {
       if (_typeController.value == ActionType.atLogin) {
-        String userId = "";
-        userId = await blocAuth.firebase.signInWithEmailAndPassword(_emailController.value, _passwordController.value);
+        final request = await blocAuth.firebase.signInWithEmailAndPassword(_emailController.value, _passwordController.value);
+        final userId = request[1];
         if(userId != "") 
           blocAuth.currentUser = await blocAuth.firebase.getCurrentUserObject();
-      } 
-      else
-        String userId = await blocAuth.firebase.createUserWithEmailAndPassword(_emailController.value, _passwordController.value);
-
+      }
+      
       blocAuth.signedIn();
       
     } catch (e) {
