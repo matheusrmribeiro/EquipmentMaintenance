@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
+import '../classes/defaultResponse.dart';
 import '../api/firebaseConnection.dart';
 import '../bloc/blocRegisterBase.dart';
 import '../classes/cities.dart';
@@ -44,30 +45,34 @@ class BlocRegisterUser extends BlocRegisterBase {
   }
 
   @override
-  Future<bool> save() async {
+  Future<DefaultResponse> save() async {
     super.save();
     final api = FirebaseConnection();
     
     if (dataObject.id==null){
-      List<String> error = [];
+      DefaultResponse error;
+
       final requestCreate = await api.createUserWithEmailAndPassword(dataObject.email, dataObject.key);
-      if (requestCreate[0]=='OK'){
+      if (requestCreate.code=="OK"){
         final requestSign = await api.signInWithEmailAndPassword(dataObject.email, dataObject.key);
-        if (requestSign[0]=='OK')
-          await Firestore.instance.collection("users").document(requestSign[1]).setData(dataObject.toJson(removeId: true));
+        if (requestSign.code=="OK")
+          await Firestore.instance.collection("users").document(requestSign.value).setData(dataObject.toJson(removeId: true));
         else
           error = requestSign;
-      } else
+      } 
+      else
         error = requestCreate;
 
-      //TODO: Fazer aqui validação para voltar para primeira etapa para ajustar o email/senha
-      if (error.isNotEmpty)
-        print("Erro: ${error[0]} -> ${error[1]}");
+      if (error!=null) {
+        print("Erro: ${error.code} -> ${error.value}");
+        moveToStep(0);
+        return error;
+      }
     }
     else
       await Firestore.instance.collection("users").document(dataObject.id).setData(dataObject.toJson(removeId: true));
 
-    return true;
+    return DefaultResponse(true, 'Inserido com sucesso!');
   }
 
   final BehaviorSubject<User> _userController = BehaviorSubject<User>();

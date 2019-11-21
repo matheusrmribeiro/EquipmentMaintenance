@@ -47,7 +47,7 @@ class BlocLogin extends BlocBase {
     try {
       if (_typeController.value == ActionType.atLogin) {
         final request = await blocAuth.firebase.signInWithEmailAndPassword(_emailController.value, _passwordController.value);
-        final userId = request[1];
+        final userId = request.value;
         if(userId != "") 
           blocAuth.currentUser = await blocAuth.firebase.getCurrentUserObject();
       }

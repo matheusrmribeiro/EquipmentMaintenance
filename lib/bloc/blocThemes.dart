@@ -35,9 +35,9 @@ class BlocThemes extends BlocBase {
   final appThemeData = {
     ApplicationTheme.lightTheme: ThemeData(
       brightness: Brightness.light,
-      primarySwatch: Colors.red,
-      primaryColor: Colors.red,
-      accentColor: Colors.redAccent,
+      primarySwatch: Colors.purple,
+      primaryColor: Colors.purple,
+      accentColor: Colors.purpleAccent,
       iconTheme: IconThemeData(
         color: Colors.white
       )
@@ -46,7 +46,7 @@ class BlocThemes extends BlocBase {
       brightness: Brightness.dark,
       primarySwatch: Colors.purple,
       primaryColor: Colors.deepPurple,
-      accentColor: Colors.purpleAccent,
+      accentColor: Colors.deepPurple[400],
       iconTheme: IconThemeData(
         color: Colors.white
       )

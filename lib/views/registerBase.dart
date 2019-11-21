@@ -1,3 +1,4 @@
+import '../classes/defaultResponse.dart';
 import '../classes/registerSteps.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,7 @@ class _BaseRegisterState extends State<BaseRegister> with SingleTickerProviderSt
   void initState() {
     super.initState();
     controller = TabController(vsync: this, length: widget.steps.length);
+    widget.bloc.tabController = controller;
   }
 
   @override
@@ -93,8 +95,7 @@ class _BaseRegisterState extends State<BaseRegister> with SingleTickerProviderSt
         child: Text("Voltar"),
         onPressed: (){
           FocusScope.of(context).requestFocus(FocusNode());
-          controller.animateTo(controller.index-1);
-          widget.bloc.inTabControllIndex.add(controller.index);
+          widget.bloc.inTabControllIndex.add(controller.index-1);
         },
       );
     }
@@ -121,8 +122,7 @@ class _BaseRegisterState extends State<BaseRegister> with SingleTickerProviderSt
                 if ((tabControllerIndex+1>=controller.length))
                   finalize();
                 else{
-                  controller.animateTo(controller.index+1);
-                  widget.bloc.inTabControllIndex.add(controller.index);
+                  widget.bloc.inTabControllIndex.add(controller.index+1);
                 }
               }
             },
@@ -132,9 +132,14 @@ class _BaseRegisterState extends State<BaseRegister> with SingleTickerProviderSt
     );
   }
 
-  void finalize(){
-    if (widget.bloc.save())
+  void finalize() async{
+    DefaultResponse response = await widget.bloc.save();
+    if (response.code)
       Navigator.pop(context, true);
+    else{
+      controller.animateTo(0);
+      widget.bloc.inTabControllIndex.add(0);
+    }
   }
 
 }

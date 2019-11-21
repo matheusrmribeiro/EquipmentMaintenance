@@ -1,10 +1,28 @@
 import 'dart:async';
 import 'package:bloc_pattern/bloc_pattern.dart';
+import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import '../classes/defaultResponse.dart';
 
 class BlocRegisterBase extends BlocBase {
   String url;
   final dataObject=null;
+  TabController tabController;
+
+  BlocRegisterBase(){
+    _tabControllIndex.stream.listen((data){
+      tabController.animateTo(data);
+    });
+  }
+
+  @override
+  void dispose() {
+    _tabControllIndex.close();
+    _nextButtonVisibility.close();
+    super.dispose();
+  }  
+
+  void moveToStep(int tabIndex) => inTabControllIndex.add(tabIndex);
 
   final BehaviorSubject<int> _tabControllIndex= BehaviorSubject<int>.seeded(0);
   Stream<int> get outTabControllIndex => _tabControllIndex.stream;
@@ -17,12 +35,5 @@ class BlocRegisterBase extends BlocBase {
 
   void beforeSave(){}
 
-  Future<bool> save() async {}
-
-  @override
-  void dispose() {
-    _tabControllIndex.close();
-    _nextButtonVisibility.close();
-    super.dispose();
-  }
+  Future<DefaultResponse> save() async {}
 }

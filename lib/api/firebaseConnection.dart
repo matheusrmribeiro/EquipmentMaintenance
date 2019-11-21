@@ -1,63 +1,63 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:qrcode/classes/user.dart';
+import '../classes/defaultResponse.dart';
+import '../classes/user.dart';
 
 class FirebaseConnection{
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  Future<List<String>> createUserWithEmailAndPassword(String email, String password) async {
+  Future<DefaultResponse> createUserWithEmailAndPassword(String email, String password) async {
     try{
       AuthResult request = await _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
-      return ['OK', request.user.uid];
+      return DefaultResponse('OK', request.user.uid);
     } catch(error) {
       var errorMessage;
         switch (error.code) {
         case "ERROR_WEAK_PASSWORD":
           errorMessage = "Senha fraca!";
-          return ['ERROR', errorMessage];
+          return DefaultResponse('ERROR', errorMessage);
         case "ERROR_INVALID_EMAIL":
           errorMessage = "O email informado não parece ser um email!";
-          return ['ERROR', errorMessage];
+          return DefaultResponse('ERROR', errorMessage);
         case "ERROR_EMAIL_ALREADY_IN_USE":
           errorMessage = "O email já está sendo usado por outro usuário.";
-          return ['ERROR', errorMessage];
+          return DefaultResponse('ERROR', errorMessage);
         default:
           errorMessage = "Um erro desconhecido ocorreu.";
-          return ['ERROR', errorMessage];
+          return DefaultResponse('ERROR', errorMessage);
       }
     }
   }
  
-  Future<List<String>> signInWithEmailAndPassword(String email, String password) async {
+  Future<DefaultResponse> signInWithEmailAndPassword(String email, String password) async {
     try{
       AuthResult request = await _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
-      return ['OK', request.user.uid];
+      return DefaultResponse('OK', request.user.uid);
     } catch(error) {
       var errorMessage;
       switch (error.code) {
         case "ERROR_INVALID_EMAIL":
           errorMessage = "O email informado não parece ser um email!";
-          return ['ERROR', errorMessage];
+          return DefaultResponse('ERROR', errorMessage);
         case "ERROR_WRONG_PASSWORD":
           errorMessage = "Senha errada!";
-          return ['ERROR', errorMessage];
+          return DefaultResponse('ERROR', errorMessage);
         case "ERROR_USER_NOT_FOUND":
           errorMessage = "O usuário não existe.";
-          return ['ERROR', errorMessage];
+          return DefaultResponse('ERROR', errorMessage);
         case "ERROR_USER_DISABLED":
           errorMessage = "Esse usuário foi desabilitado.";
-          return ['ERROR', errorMessage];
+          return DefaultResponse('ERROR', errorMessage);
         case "ERROR_TOO_MANY_REQUESTS":
           errorMessage = "Muitas requisições. Tente mais tarde.";
-          return ['ERROR', errorMessage];
+          return DefaultResponse('ERROR', errorMessage);
         case "ERROR_OPERATION_NOT_ALLOWED":
           errorMessage = "Login com email e senha não está habilitado.";
-          return ['ERROR', errorMessage];
+          return DefaultResponse('ERROR', errorMessage);
         default:
           errorMessage = "Um erro desconhecido ocorreu.";
-          return ['ERROR', errorMessage];
+          return DefaultResponse('ERROR', errorMessage);
       }
     }    
   }

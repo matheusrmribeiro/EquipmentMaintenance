@@ -52,8 +52,11 @@ class StepOne extends RegisterSteps {
                 StreamBuilder(
                   stream: bloc.outKey,
                   builder: (context, snapshot) {
+                    if (!snapshot.hasData)
+                      Container();
+
+                    keyController.text = bloc.dataObject.key;
                     return CTextFormField(
-                      initialValue: bloc.dataObject.key,
                       keyboardType: TextInputType.text,  
                       controller: keyController,
                       maxLength: 80,         
@@ -64,21 +67,26 @@ class StepOne extends RegisterSteps {
                     );
                   }
                 ),
-                CTextFormField(
-                  initialValue: bloc.dataObject.key,
-                  keyboardType: TextInputType.text,  
-                  maxLength: 80,         
-                  hintText: 'Prometo não olhar!',
-                  labelText: 'Digite a senha novamente',
-                  validator: (value){ 
-                    if (value == "")
-                      return "Obrigatório!";
-                    else if (value != keyController.text)
-                      return "A confirmação de senha não confere!";
-                    else
-                      return null;
-                  },
-                )
+                StreamBuilder(
+                  stream: bloc.outKey,
+                  builder: (context, snapshot) {
+                    return CTextFormField(
+                      initialValue: bloc.dataObject.key,
+                      keyboardType: TextInputType.text,  
+                      maxLength: 80,         
+                      hintText: 'Prometo não olhar!',
+                      labelText: 'Digite a senha novamente',
+                      validator: (value){ 
+                        if (value == "")
+                          return "Obrigatório!";
+                        else if (value != keyController.text)
+                          return "A confirmação de senha não confere!";
+                        else
+                          return null;
+                      },
+                    );
+                  }
+                ),
               ],
             ),
           )
