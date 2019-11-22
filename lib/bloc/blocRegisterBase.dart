@@ -8,6 +8,7 @@ class BlocRegisterBase extends BlocBase {
   String url;
   final dataObject=null;
   TabController tabController;
+  DefaultResponse registerState = DefaultResponse("OK", "Inserido com sucesso!");
 
   BlocRegisterBase(){
     _tabControllIndex.stream.listen((data){
@@ -19,6 +20,7 @@ class BlocRegisterBase extends BlocBase {
   void dispose() {
     _tabControllIndex.close();
     _nextButtonVisibility.close();
+    _error.close();
     super.dispose();
   }  
 
@@ -28,12 +30,21 @@ class BlocRegisterBase extends BlocBase {
   Stream<int> get outTabControllIndex => _tabControllIndex.stream;
   Sink<int> get inTabControllIndex => _tabControllIndex.sink;
  
- final BehaviorSubject<bool> _nextButtonVisibility= BehaviorSubject<bool>.seeded(true);
-  Stream<bool> get outNextButtonVisibility=> _nextButtonVisibility.stream;
+  final BehaviorSubject<bool> _nextButtonVisibility= BehaviorSubject<bool>.seeded(true);
+  Stream<bool> get outNextButtonVisibility => _nextButtonVisibility.stream;
   Sink<bool> get inNextButtonVisibility => _nextButtonVisibility.sink;
   bool nextButtonVisibilityValue() => _nextButtonVisibility.value;
 
+  final BehaviorSubject<String> _error = BehaviorSubject<String>();
+  Stream<String> get outError => _error.stream;
+  Sink<String> get inError => _error.sink;
+
   void beforeSave(){}
 
-  Future<DefaultResponse> save() async {}
+  Future<DefaultResponse> save() async {
+    if (registerState.code=="ERROR")
+      inError.add(registerState.value);
+
+    return registerState;
+  }
 }

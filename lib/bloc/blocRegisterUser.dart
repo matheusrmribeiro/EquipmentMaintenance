@@ -46,7 +46,6 @@ class BlocRegisterUser extends BlocRegisterBase {
 
   @override
   Future<DefaultResponse> save() async {
-    super.save();
     final api = FirebaseConnection();
     
     if (dataObject.id==null){
@@ -58,21 +57,20 @@ class BlocRegisterUser extends BlocRegisterBase {
         if (requestSign.code=="OK")
           await Firestore.instance.collection("users").document(requestSign.value).setData(dataObject.toJson(removeId: true));
         else
-          error = requestSign;
+          registerState = requestSign;
       } 
       else
-        error = requestCreate;
+        registerState = requestCreate;
 
       if (error!=null) {
         print("Erro: ${error.code} -> ${error.value}");
         moveToStep(0);
-        return error;
       }
     }
     else
       await Firestore.instance.collection("users").document(dataObject.id).setData(dataObject.toJson(removeId: true));
 
-    return DefaultResponse(true, 'Inserido com sucesso!');
+    super.save();
   }
 
   final BehaviorSubject<User> _userController = BehaviorSubject<User>();

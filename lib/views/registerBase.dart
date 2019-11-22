@@ -42,7 +42,20 @@ class _BaseRegisterState extends State<BaseRegister> with SingleTickerProviderSt
         title: Text(widget.title),
         centerTitle: true        
       ),
-      body: buildScreen()
+      body: Stack(
+        children: <Widget>[
+          StreamBuilder(
+            stream: widget.bloc.outError,
+            builder: (context, snapshot){
+              if (!snapshot.hasData)
+                return Container();
+
+              return ContainerError(snapshot.data);
+            },
+          ),
+          buildScreen()
+        ],
+      )
     );
   }
 
@@ -133,13 +146,66 @@ class _BaseRegisterState extends State<BaseRegister> with SingleTickerProviderSt
   }
 
   void finalize() async{
-    DefaultResponse response = await widget.bloc.save();
-    if (response.code)
+    await widget.bloc.save();
+    if (widget.bloc.registerState.code=="OK")
       Navigator.pop(context, true);
     else{
       controller.animateTo(0);
       widget.bloc.inTabControllIndex.add(0);
     }
   }
+}
 
+class ContainerError extends StatefulWidget {
+  ContainerError(this.error);
+  final String error;
+
+  @override
+  _ContainerErrorState createState() => _ContainerErrorState();
+}
+
+class _ContainerErrorState extends State<ContainerError> with SingleTickerProviderStateMixin {
+
+  AnimationController _controller;
+  Animation<Offset> offset;
+  
+  initState() {
+    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1));
+    offset = Tween<Offset>(begin: Offset.zero, end: Offset(0.0, 0.5)).animate(_controller);
+    super.initState();
+    _controller.forward();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideTransition(
+      position: offset,
+      child: Card(
+        margin: EdgeInsets.only(left: 20, right: 20),
+        color: Theme.of(context).primaryColor,
+        child: Container(
+          margin: EdgeInsets.only(left: 10, right: 10),
+          width: double.infinity,
+          height: 50,
+          child: Row(
+            children: <Widget>[
+              Icon(Icons.info_outline),
+              Container(width: 5),
+              Expanded(
+                child: RichText(
+                text: TextSpan(
+                  style: DefaultTextStyle.of(context).style,
+                  text: widget.error,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                softWrap: true,
+            ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
