@@ -135,6 +135,7 @@ class _BaseRegisterState extends State<BaseRegister> with SingleTickerProviderSt
                 if ((tabControllerIndex+1>=controller.length))
                   finalize();
                 else{
+                  widget.bloc.inError.add(null);
                   widget.bloc.inTabControllIndex.add(controller.index+1);
                 }
               }
@@ -158,7 +159,7 @@ class _BaseRegisterState extends State<BaseRegister> with SingleTickerProviderSt
 
 class ContainerError extends StatefulWidget {
   ContainerError(this.error);
-  final String error;
+  final DefaultResponse error;
 
   @override
   _ContainerErrorState createState() => _ContainerErrorState();
@@ -186,21 +187,38 @@ class _ContainerErrorState extends State<ContainerError> with SingleTickerProvid
         child: Container(
           margin: EdgeInsets.only(left: 10, right: 10),
           width: double.infinity,
-          height: 50,
+          height: 60,
           child: Row(
             children: <Widget>[
               Icon(Icons.info_outline),
               Container(width: 5),
               Expanded(
-                child: RichText(
-                text: TextSpan(
-                  style: DefaultTextStyle.of(context).style,
-                  text: widget.error,
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                softWrap: true,
-            ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    RichText(
+                      text: TextSpan(
+                        text: widget.error.value,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
+                    ),
+                    Container(height: 5),
+                    RichText(
+                      text: TextSpan(
+                        style: TextStyle(
+                          color: Colors.grey
+                        ),
+                        text: widget.error.addtionalInfo,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: true,
+                    ),
+                  ],
+                )
               ),
             ],
           ),

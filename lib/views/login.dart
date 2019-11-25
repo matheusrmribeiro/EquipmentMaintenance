@@ -196,12 +196,17 @@ class SubmitButtons extends StatelessWidget {
                       Navigation navigator = Navigation();
                       navigator.navigaTo(context, RegisterUser());
                     },
-                    child: Text("Criar conta",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor
-                      )
+                    child: Container(
+                      height: 25,
+                      child: Center(
+                        child: Text("Criar conta",
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor
+                          )
+                        ),
+                      ),
                     ),
                   ),
                 ],

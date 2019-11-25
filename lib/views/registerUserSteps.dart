@@ -140,6 +140,9 @@ class StepTwo extends RegisterSteps {
             StreamBuilder(
               stream: bloc.outCity,
               builder: (context, snapshot) {
+                if (!snapshot.hasData)
+                  return Container();
+                  
                 return CDropdownButtonFormField<String>(
                   hint: Text("Cidade"),
                   value: snapshot.data,
