@@ -87,11 +87,15 @@ class Fields extends StatelessWidget {
                   CTextFormField(
                     textKey: Key('email'),
                     keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
                     labelText: 'Email',
                     icon: Icon(Icons.email),
                     margin: EdgeInsets.all(15),
                     validator: BlocLogin.validateEmail,
                     onSaved: (value) => bloc.inEmail.add(value),
+                    onFieldSubmited: (value){
+                      FocusScope.of(context).nextFocus();
+                    },
                   ),
                   CTextFormField(
                     textKey: Key('password'),
@@ -140,7 +144,7 @@ class SubmitButtons extends StatelessWidget {
     return false;
   }
 
-  void validateAndSubmit(ActionType type) async {
+  void validateAndSubmit() async {
     if (validateAndSave())
       bloc.submitLogIn(blocAuth);
   }
@@ -151,70 +155,85 @@ class SubmitButtons extends StatelessWidget {
 
   void moveToLogin() {
     formKey.currentState.reset();
-    bloc.inType.add(ActionType.atLogin);
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: bloc.outType,
-      builder: (context, snapshot){
-        if (!snapshot.hasData)
-          return Container();
-        
-        return Column(
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Container(
-              width: 200,
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        StreamBuilder(
+          stream: bloc.outSubmitStatus,
+          builder: (context, snapshot){
+            double width;
+            Widget widgetButton;
+
+            switch (snapshot.data) {
+              case SubmitStatus.ssLoading:
+                width = 45; 
+                widgetButton = CircularProgressIndicator();
+                break;
+              case SubmitStatus.ssFinalized:
+                width = 200; 
+                widgetButton = Container();
+                break;
+              default : 
+                width = 200; 
+                widgetButton = Text('Entrar', 
+                style: TextStyle(
+                  fontSize: 20.0, 
+                  color: Colors.white)
+                );
+                break;
+            }
+                
+            return AnimatedContainer(
+              duration: Duration(seconds: 1),
+              width: width,
               height: 45,
               margin: EdgeInsets.only(bottom: 15),
-              child: RaisedButton(
-                key: Key('signIn'),
+              decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
-                elevation: 10,
-                child: Text('Entrar', 
-                  style: TextStyle(
-                    fontSize: 20.0, 
-                    color: Colors.white)
-                  ),
-                onPressed: (){
-                  validateAndSubmit(snapshot.data);
-                },
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))
+                borderRadius: BorderRadius.all(Radius.circular(40))
               ),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text("Ainda não tem uma conta? "),
-                  GestureDetector(
-                    onTap: (){
-                      Navigation navigator = Navigation();
-                      navigator.navigaTo(context, RegisterUser());
-                    },
-                    child: Container(
-                      height: 25,
-                      child: Center(
-                        child: Text("Criar conta",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor
-                          )
-                        ),
-                      ),
+              child: InkWell(
+                onTap: validateAndSubmit,
+                child: Center(
+                  child: widgetButton
+                ),
+              ),
+            );
+          },
+        ),
+        Container(
+          margin: EdgeInsets.fromLTRB(5, 0, 5, 5),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("Ainda não tem uma conta? "),
+              GestureDetector(
+                onTap: (){
+                  Navigation navigator = Navigation();
+                  navigator.navigaTo(context, RegisterUser());
+                },
+                child: Container(
+                  height: 25,
+                  child: Center(
+                    child: Text("Criar conta",
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor
+                      )
                     ),
                   ),
-                ],
+                ),
               ),
-            )
-          ],
-        );
-      },
+            ],
+          ),
+        )
+      ],
     );
   }
 }

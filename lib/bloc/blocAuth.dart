@@ -17,8 +17,8 @@ class BlocAuth extends BlocBase {
 
   BlocAuth(){
     firebase.currentUser().then((userId) async {
-        inAuthStatus.add((userId == null) ? AuthStatus.notSignedIn : AuthStatus.signedIn);
-        currentUser = await firebase.getCurrentUserObject();
+      currentUser = await firebase.getCurrentUserObject();
+      inAuthStatus.add((userId == null) ? AuthStatus.notSignedIn : AuthStatus.signedIn);
     });
   }
 

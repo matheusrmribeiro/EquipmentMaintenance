@@ -92,7 +92,7 @@ class Header extends StatelessWidget {
                       StreamBuilder(
                         stream: bloc.outAuthStatus,
                         builder: (context, snapshot){
-                          return Text(bloc.currentUser.name??"Usuário",
+                          return Text(bloc.currentUser.nickname??"Usuário",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 25,

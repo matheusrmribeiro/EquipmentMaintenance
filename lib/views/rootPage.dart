@@ -39,17 +39,16 @@ class PageController extends StatelessWidget {
     return StreamBuilder(
       stream: bloc.outAuthStatus,
       builder: (context, snapshot){
-        if (snapshot.hasData) {
-          switch (snapshot.data) {
-            case AuthStatus.notSignedIn:
-              return LoginPage();
-            case AuthStatus.signedIn:
-              return Home();
-          default : return WaitingScreen();
-          }
-        } 
-        else
+        if (!snapshot.hasData)
           return WaitingScreen();
+        
+        switch (snapshot.data) {
+          case AuthStatus.notSignedIn:
+            return LoginPage();
+          case AuthStatus.signedIn:
+            return Home();
+        default : return WaitingScreen();
+        }
       },
     );
   }

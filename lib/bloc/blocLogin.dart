@@ -3,9 +3,10 @@ import 'package:bloc_pattern/bloc_pattern.dart';
 import 'package:qrcode/bloc/blocAuth.dart';
 import 'package:rxdart/rxdart.dart';
 
-enum ActionType {
-  atLogin,
-  atRegister,
+enum SubmitStatus{
+  ssNormal,
+  ssLoading,
+  ssFinalized
 }
 
 class BlocLogin extends BlocBase {
@@ -15,7 +16,7 @@ class BlocLogin extends BlocBase {
   void dispose() {
     _emailController.close();
     _passwordController.close();
-    _typeController.close();
+    _statuController.close();
     super.dispose();
   }
 
@@ -39,21 +40,23 @@ class BlocLogin extends BlocBase {
   Stream<String> get outPassword => _passwordController.stream;
   Sink<String> get inPassword => _passwordController.sink;  
 
-  final BehaviorSubject<ActionType> _typeController = BehaviorSubject<ActionType>.seeded(ActionType.atLogin);
-  Stream<ActionType> get outType => _typeController.stream;
-  Sink<ActionType> get inType => _typeController.sink;  
+  final BehaviorSubject<SubmitStatus> _statuController = BehaviorSubject<SubmitStatus>.seeded(SubmitStatus.ssNormal);
+  Stream<SubmitStatus> get outSubmitStatus => _statuController.stream;
+  Sink<SubmitStatus> get inSubmitStatus => _statuController.sink;  
 
   void submitLogIn(BlocAuth blocAuth) async {
     try {
-      if (_typeController.value == ActionType.atLogin) {
-        final request = await blocAuth.firebase.signInWithEmailAndPassword(_emailController.value, _passwordController.value);
-        final userId = request.value;
-        if(userId != "") 
-          blocAuth.currentUser = await blocAuth.firebase.getCurrentUserObject();
+      inSubmitStatus.add(SubmitStatus.ssLoading);
+      await Future.delayed(Duration(seconds: 2));
+      final request = await blocAuth.firebase.signInWithEmailAndPassword(_emailController.value, _passwordController.value);
+      if(request.code != "ERROR"){
+        blocAuth.currentUser = await blocAuth.firebase.getCurrentUserObject();
+        blocAuth.signedIn();
+        inSubmitStatus.add(SubmitStatus.ssFinalized);
+        await Future.delayed(Duration(seconds: 5));
       }
       
-      blocAuth.signedIn();
-      
+      inSubmitStatus.add(SubmitStatus.ssNormal);
     } catch (e) {
       print('Error: $e');
     }
