@@ -27,6 +27,7 @@ class StepOne extends RegisterSteps {
                     return CTextFormField(
                       initialValue: bloc.dataObject.name,
                       keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
                       maxLength: 50,
                       hintText: '',
                       labelText: 'Nome completo',
@@ -40,7 +41,8 @@ class StepOne extends RegisterSteps {
                   builder: (context, snapshot) {
                     return CTextFormField(
                       initialValue: bloc.dataObject.email,
-                      keyboardType: TextInputType.emailAddress,        
+                      keyboardType: TextInputType.emailAddress,  
+                      textInputAction: TextInputAction.next,      
                       maxLength: 50,   
                       hintText: 'exemplo@exemplo.com.br',
                       labelText: 'Email',
@@ -57,7 +59,8 @@ class StepOne extends RegisterSteps {
 
                     keyController.text = bloc.dataObject.key;
                     return CTextFormField(
-                      keyboardType: TextInputType.text,  
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
                       controller: keyController,
                       maxLength: 80,         
                       hintText: 'Prometo não olhar!',
@@ -72,7 +75,8 @@ class StepOne extends RegisterSteps {
                   builder: (context, snapshot) {
                     return CTextFormField(
                       initialValue: bloc.dataObject.key,
-                      keyboardType: TextInputType.text,  
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.done, 
                       maxLength: 80,         
                       hintText: 'Prometo não olhar!',
                       labelText: 'Digite a senha novamente',

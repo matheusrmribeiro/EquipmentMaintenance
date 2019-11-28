@@ -33,5 +33,8 @@ class BlocAuth extends BlocBase {
   Sink<AuthStatus> get inAuthStatus => _authStatusController.sink;
 
   void signedIn() => inAuthStatus.add(AuthStatus.signedIn);
-  void signedOut() => inAuthStatus.add(AuthStatus.notSignedIn);
+  void signedOut() {
+    firebase.signOut(); 
+    inAuthStatus.add(AuthStatus.notSignedIn);
+  }
 }

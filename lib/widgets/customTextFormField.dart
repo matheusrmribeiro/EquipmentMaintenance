@@ -96,7 +96,7 @@ class _CTextFormFieldState extends State<CTextFormField> {
           validator: widget.validator,
           onSaved: widget.onSaved,
           onChanged: widget.onChanged,
-          onFieldSubmitted: widget.onFieldSubmited,
+          onFieldSubmitted: ((widget.onFieldSubmited==null)&&(widget.textInputAction==TextInputAction.next)) ? (String value){FocusScope.of(context).nextFocus();} : widget.onFieldSubmited,
         ),
       )
     );

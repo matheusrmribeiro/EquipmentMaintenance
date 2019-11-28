@@ -12,7 +12,8 @@ class BlocRegisterBase extends BlocBase {
 
   BlocRegisterBase(){
     _tabControllIndex.stream.listen((data){
-      tabController.animateTo(data);
+      if (data!=null)
+        tabController.animateTo(data);
     });
   }
 
@@ -26,7 +27,7 @@ class BlocRegisterBase extends BlocBase {
 
   void moveToStep(int tabIndex) => inTabControllIndex.add(tabIndex);
 
-  final BehaviorSubject<int> _tabControllIndex= BehaviorSubject<int>.seeded(0);
+  final BehaviorSubject<int> _tabControllIndex= BehaviorSubject<int>();
   Stream<int> get outTabControllIndex => _tabControllIndex.stream;
   Sink<int> get inTabControllIndex => _tabControllIndex.sink;
  

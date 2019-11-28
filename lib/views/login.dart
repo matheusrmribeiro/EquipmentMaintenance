@@ -93,9 +93,6 @@ class Fields extends StatelessWidget {
                     margin: EdgeInsets.all(15),
                     validator: BlocLogin.validateEmail,
                     onSaved: (value) => bloc.inEmail.add(value),
-                    onFieldSubmited: (value){
-                      FocusScope.of(context).nextFocus();
-                    },
                   ),
                   CTextFormField(
                     textKey: Key('password'),

@@ -127,6 +127,8 @@ class _BaseRegisterState extends State<BaseRegister> with SingleTickerProviderSt
             color: Theme.of(context).primaryColor,
             child: (tabControllerIndex>=controller.length-1) ? Text("Finalizar") : Text("Próximo"),
             onPressed: (){
+              // widget.bloc.inError.add(DefaultResponse(code: "ERROR", value:"TESTE"));
+              // return;
               FocusScope.of(context).requestFocus(FocusNode());
               var form = widget.steps[controller.index].formKey.currentState;
               if (form.validate()) {
@@ -151,7 +153,6 @@ class _BaseRegisterState extends State<BaseRegister> with SingleTickerProviderSt
     if (widget.bloc.registerState.code=="OK")
       Navigator.pop(context, true);
     else{
-      controller.animateTo(0);
       widget.bloc.inTabControllIndex.add(0);
     }
   }
@@ -170,11 +171,27 @@ class _ContainerErrorState extends State<ContainerError> with SingleTickerProvid
   AnimationController _controller;
   Animation<Offset> offset;
   
+  @override
   initState() {
     _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1));
-    offset = Tween<Offset>(begin: Offset.zero, end: Offset(0.0, 0.5)).animate(_controller);
+    offset = Tween<Offset>(begin: Offset(0,-10), end: Offset(0.0, 0.5)).animate(_controller);
     super.initState();
     _controller.forward();
+    closeErrorHint();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void closeErrorHint() {
+    Future.delayed(Duration(seconds: 10)).then((_){
+      _controller.reverse().then((_){
+        dispose();
+      });
+    });
   }
 
   @override
