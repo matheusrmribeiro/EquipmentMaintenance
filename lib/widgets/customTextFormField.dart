@@ -50,7 +50,7 @@ class _CTextFormFieldState extends State<CTextFormField> {
 
   @override
   void initState() {
-     node = FocusNode();
+    node = FocusNode();
     super.initState();
   }
 

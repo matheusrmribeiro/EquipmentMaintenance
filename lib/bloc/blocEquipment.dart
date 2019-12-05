@@ -34,17 +34,20 @@ class BlocEquipment extends BlocBase {
     });
   }
 
-  void newMaintenance() async {
+  void newMaintenance(Map<String, String> data) async {
     final inPeriod = DateTime.now().isBefore(_equipmentController.value.nextMaintenance);
 
-    Map<String, dynamic> newMaintenance = {
-      "description": "Usar um popup para preencher aqui",
-      "equipment": _equipmentController.value.id,
-      "date": DateTime.now(),
-      "inPeriod": inPeriod
-    };
+    if (data!=null){
+      Map<String, dynamic> newMaintenance = {
+        "technician": data["technician"]??"",
+        "observation": data["observation"]??"",
+        "equipment": _equipmentController.value.id,
+        "date": DateTime.now(),
+        "inPeriod": inPeriod
+      };
 
-    DocumentReference docResult = await Firestore.instance.collection("maintenanceLog").add(newMaintenance);
+      DocumentReference docResult = await Firestore.instance.collection("maintenanceLog").add(newMaintenance);
+    }
   }
 
   @override

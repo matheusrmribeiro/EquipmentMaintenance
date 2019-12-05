@@ -19,8 +19,9 @@ class BlocQRCodeGenerator extends BlocBase {
 
   final Equipment dataObject = Equipment();
 
+  String getName() => dataObject.name;
   String getDescription() => dataObject.description;
-
+  
   final BehaviorSubject<Equipment> equipmentController= BehaviorSubject<Equipment>();
   Stream<Equipment> get outEquipmentController => equipmentController.stream;
   Sink<Equipment> get inEquipmentController => equipmentController.sink;

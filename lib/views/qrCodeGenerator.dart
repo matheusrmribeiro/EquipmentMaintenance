@@ -75,7 +75,7 @@ class QRCodeGeneratorState extends State<QRCodeGenerator> with TickerProviderSta
                     if (!snapshot.hasData)
                       return Container();
                       
-                    return Text((snapshot.data) ? "Equipamento" : bloc.getDescription(),
+                    return Text((snapshot.data) ? "Equipamento" : bloc.getName(),
                       style: TextStyle(
                         fontSize: 30,
                         color: Colors.white
@@ -209,12 +209,14 @@ class FieldsForm extends StatelessWidget {
             children: <Widget>[
               CTextFormField(
                 keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
                 labelText: 'Nome',
                 validator: (value){ return value == "" ? "Obrigatório!" : null;},
                 onSaved: (value) => bloc.dataObject.name = value,
               ),
               CTextFormField(
                 keyboardType: TextInputType.text,
+                textInputAction: TextInputAction.next,
                 labelText: 'Descrição',
                 validator: (value){ return value == "" ? "Obrigatório!" : null;},
                 onSaved: (value) => bloc.dataObject.description = value,
@@ -263,6 +265,7 @@ class FieldsForm extends StatelessWidget {
               ),
               CTextFormField(
                 keyboardType: TextInputType.numberWithOptions(decimal: false),
+                textInputAction: TextInputAction.done,
                 controller: _maintenancePeriodController,
                 labelText: 'Tempo de manutenção (dias)',
                 validator: (value){ return value == "" ? "Obrigatório!" : null;},
