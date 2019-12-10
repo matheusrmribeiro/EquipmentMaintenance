@@ -74,7 +74,6 @@ class EquipmentDetails extends StatelessWidget{
     final TextEditingController cTechnician = TextEditingController();
     final TextEditingController cDescription = TextEditingController();
     Map<String, String> data = await showDialog(
-      
       context: context,
       builder: (context){
         return AlertDialog(
@@ -89,13 +88,15 @@ class EquipmentDetails extends StatelessWidget{
                     labelText: "Técnico"
                   ),
                   controller: cTechnician,
+                  maxLength: 100,
                 ),
                 TextField(
                   textCapitalization: TextCapitalization.sentences,
                   decoration: InputDecoration(
                     labelText: "Observação"
                   ),
-                  controller: cDescription
+                  controller: cDescription,
+                  maxLength: 500,
                 ),
               ],
             ),

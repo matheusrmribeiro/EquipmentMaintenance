@@ -10,7 +10,8 @@ class CDropdownButtonFormField<T> extends StatelessWidget {
     this.value,
     this.hint,
     this.margin,
-    this.items});
+    this.items,
+    this.useStyle = false});
 
   final Key textKey;
   final String labelText;
@@ -22,15 +23,21 @@ class CDropdownButtonFormField<T> extends StatelessWidget {
   final Widget hint;
   final EdgeInsetsGeometry margin;
   final List<DropdownMenuItem<T>> items;
+  final bool useStyle;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 6,
       margin: margin,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(90),
-      ),
+      shape: 
+      (useStyle)
+      ?
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(90),
+        )
+      :
+        null,
       child: Container(
         padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
         child: DropdownButtonFormField<T>(

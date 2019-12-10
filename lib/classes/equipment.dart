@@ -9,7 +9,9 @@ class Equipment{
   String room;
   int maintenancePeriod;
   DateTime nextMaintenance;
-
+  Color _status;
+  String _statusInfo;
+  
   Map<String, dynamic> toJson({bool removeId = false, bool useTimestamp = false}) {
     var data = {
       "id": "$id",
@@ -47,20 +49,28 @@ class Equipment{
     room              = json["room"];
     maintenancePeriod = json["maintenancePeriod"];
     nextMaintenance   = DateTime.fromMicrosecondsSinceEpoch(json["nextMaintenance"]);
+  }
+
+  String statusInfo() => _statusInfo;
+
+  Color statusColor(){
+    Duration dateDifference = nextMaintenance.toLocal().difference(DateTime.now());
+    Color corGravidade = Colors.green;
+
+    if(dateDifference.inDays >= 90){
+      corGravidade = Colors.green;
+      _statusInfo = "A próxima manutenção ainda está distante!";
+    }
+    else
+    if((dateDifference.inDays >= 30)&&(dateDifference.inDays <= 45)){
+      corGravidade = Colors.orangeAccent;
+      _statusInfo = "A próxima manutenção está próxima!";
+    }
+    else{
+      corGravidade = Colors.redAccent;
+      _statusInfo = "A próxima manutenção já passou do prazo ou está muito próxima!";
+    }
+
+    return corGravidade;
   }  
-}
-
-Color colorLevel(DateTime date){
-  Duration dateDifference = date.toLocal().difference(DateTime.now());
-  Color corGravidade = Colors.green;
-
-  if(dateDifference.inDays >= 90)
-    corGravidade = Colors.green;
-  else
-  if((dateDifference.inDays >= 30)&&(dateDifference.inDays <= 45))
-    corGravidade = Colors.orangeAccent;
-  else
-    corGravidade = Colors.redAccent;
-
-  return corGravidade;
 }

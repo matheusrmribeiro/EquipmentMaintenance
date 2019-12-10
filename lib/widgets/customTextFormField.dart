@@ -20,7 +20,8 @@ class CTextFormField extends StatefulWidget {
     this.removeLeftMargin = false,
     this.enabled = true,
     this.textInputAction,
-    this.focusNode});
+    this.focusNode,
+    this.useStyle = false});
 
   final Key textKey;
   final TextInputType keyboardType;
@@ -40,6 +41,7 @@ class CTextFormField extends StatefulWidget {
   final bool enabled;
   final TextInputAction textInputAction;
   final FocusNode focusNode;
+  final bool useStyle;
 
   @override
   _CTextFormFieldState createState() => _CTextFormFieldState();
@@ -64,11 +66,17 @@ class _CTextFormFieldState extends State<CTextFormField> {
   Widget build(BuildContext context) {
     final bloc = BlocProvider.getBloc<BlocThemes>();
     return Card(
-      elevation: widget.enabled ? 6 : 1,
+      elevation: (widget.useStyle) ? (widget.enabled ? 6 : 1) : 0,
       margin: widget.margin,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(90),
-      ),
+      shape: 
+      (widget.useStyle)
+      ?
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(90),
+        )
+      :
+        null
+      ,
       color: widget.enabled ? null : (bloc.selectedTheme()==ApplicationTheme.lightTheme ? Colors.grey[300] : Colors.grey[700]),
       child: Container(
         padding: EdgeInsets.fromLTRB((widget.removeLeftMargin) ? 0 : 20, 10, 20, 5),

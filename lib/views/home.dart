@@ -50,7 +50,54 @@ class Home extends StatelessWidget{
               Navigation navigation = Navigation();
               navigation.navigaTo(context, QRCodeGenerator());
             },
-          )
+          ),
+          SpeedDialChild(
+            label: "Legendas",
+            labelBackgroundColor: Theme.of(context).accentColor,
+            child: Icon(Icons.subtitles),
+            onTap: (){
+              showDialog(
+                context: context,
+                builder: (context){
+                  return AlertDialog(
+                    title: Text("Legendas - Próxima manutenção"),
+                    content: Container(
+                      height: MediaQuery.of(context).size.height*0.4,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Icon(Icons.lightbulb_outline, color: Colors.green,),
+                              Text("Está próxima", softWrap: true,)
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Icon(Icons.lightbulb_outline, color: Colors.orangeAccent,),
+                              Text("Está distante", softWrap: true,)
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Icon(Icons.lightbulb_outline, color: Colors.redAccent,),
+                              Text("Está atrasada", softWrap: true,)
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    actions: <Widget>[
+                      MaterialButton(
+                        child: Text("Cancelar"),
+                        onPressed: () => Navigator.of(context).pop(),
+                      )
+                    ],
+                  );
+                }
+              );
+            }
+          ),
         ],
       )
     );
@@ -183,7 +230,7 @@ class EquipmentItem extends StatelessWidget {
       },
       child: Card(
         margin: EdgeInsets.fromLTRB(10, 10, 10, 0),
-        color: colorLevel(_equipment.nextMaintenance),
+        color: _equipment.statusColor(),
         child: Card(
           margin: EdgeInsets.fromLTRB(2, 2, 2, 2),
           child: Column(
@@ -221,7 +268,9 @@ class EquipmentItem extends StatelessWidget {
                           padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
                           child: Hero(
                             tag: _documentID,
-                            child: Icon(Icons.lightbulb_outline, color: colorLevel(_equipment.nextMaintenance),),
+                            child: Icon(Icons.lightbulb_outline, 
+                              color: _equipment.statusColor()
+                            ),
                           ),
                         ),
                       ],

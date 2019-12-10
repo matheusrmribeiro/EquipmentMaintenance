@@ -62,7 +62,7 @@ class QRCodeGeneratorState extends State<QRCodeGenerator> with TickerProviderSta
             Container(
               margin: EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Colors.red,
+                color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.all(
                   Radius.circular(20)
                 )
@@ -100,7 +100,18 @@ class QRCodeGeneratorState extends State<QRCodeGenerator> with TickerProviderSta
                         return Container();
 
                       return Center(
-                        child: QRCodeDraw(snapshot.data, _formKey, MediaQuery.of(context).size.width*0.7)
+                        child: Column(
+                          children: <Widget>[
+                            QRCodeDraw(snapshot.data, _formKey, MediaQuery.of(context).size.width*0.7),
+                            Text(snapshot.data.description,
+                              softWrap: true,
+                              style: TextStyle(fontSize: 20,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey
+                              )
+                            ),
+                          ],
+                        )
                       );
                     },
                   ),
@@ -134,6 +145,7 @@ class QRCodeGeneratorState extends State<QRCodeGenerator> with TickerProviderSta
                     height: 50,
                     width: 200,
                     child: StreamBuilder(
+                      initialData: true,
                       stream: bloc.outIsRegister,
                       builder: (context, snapshot){
                         if (!snapshot.hasData)

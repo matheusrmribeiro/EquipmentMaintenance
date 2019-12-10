@@ -64,7 +64,7 @@ class BlocEquipment extends BlocBase {
 
   final BehaviorSubject<GlobalKey> _key = BehaviorSubject<GlobalKey>.seeded(GlobalKey());
   Stream<GlobalKey> get outKey => _key.stream;
-  Sink<GlobalKey> get inKey=> _key.sink;
+  Sink<GlobalKey> get inKey => _key.sink;
 
   final BehaviorSubject<DateTime> _nextmaintenance = BehaviorSubject<DateTime>();
   Stream<DateTime> get outNextmaintenance => _nextmaintenance.stream;
