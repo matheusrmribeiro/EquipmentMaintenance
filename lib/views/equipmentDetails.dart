@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../bloc/blocEquipment.dart';
 import '../classes/equipment.dart';
 import '../methods/qrCode.dart';
@@ -29,12 +30,11 @@ class EquipmentDetails extends StatelessWidget{
       body: StreamBuilder(
         stream: bloc.outEquipmentController,
         builder: (context, snapshot){
+          if (snapshot.hasData && snapshot.hasError)
+            return BodyError();
+          else
           if (snapshot.hasData)
             return Body(snapshot.data);
-          else if (snapshot.hasError)
-            return Container(
-              child: Text(snapshot.error.toString()),
-            );
           else
             return Container();
         },
@@ -236,6 +236,25 @@ class Body extends StatelessWidget {
             child: LogList(equipment.id)
           )
         ]
+      )
+    );
+  }
+}
+
+class BodyError extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(FontAwesomeIcons.sadTear, 
+            size: MediaQuery.of(context).size.width*0.5,
+            color: Theme.of(context).accentColor),
+          Container(height: 40),
+          Text("Ops!", style: TextStyle(fontSize: 30),),
+          Text("Não foi encontrado nenhum QRCode"),
+        ],
       )
     );
   }
