@@ -21,7 +21,8 @@ class CTextFormField extends StatefulWidget {
     this.enabled = true,
     this.textInputAction,
     this.focusNode,
-    this.useStyle = false});
+    this.useStyle = false,
+    this.textCapitalization = TextCapitalization.none});
 
   final Key textKey;
   final TextInputType keyboardType;
@@ -40,6 +41,7 @@ class CTextFormField extends StatefulWidget {
   final bool removeLeftMargin;
   final bool enabled;
   final TextInputAction textInputAction;
+  final TextCapitalization textCapitalization;
   final FocusNode focusNode;
   final bool useStyle;
 
@@ -79,7 +81,7 @@ class _CTextFormFieldState extends State<CTextFormField> {
       ,
       color: widget.enabled ? null : (bloc.selectedTheme()==ApplicationTheme.lightTheme ? Colors.grey[300] : Colors.grey[700]),
       child: Container(
-        padding: EdgeInsets.fromLTRB((widget.removeLeftMargin) ? 0 : 20, 10, 20, 5),
+        padding: (widget.useStyle) ? EdgeInsets.fromLTRB((widget.removeLeftMargin) ? 0 : 20, 10, 20, 5) : null,
         child: TextFormField(
           initialValue: widget.initialValue,
           maxLength: widget.maxLength,
@@ -88,18 +90,24 @@ class _CTextFormFieldState extends State<CTextFormField> {
           focusNode: node,
           keyboardType: widget.keyboardType,
           textInputAction: widget.textInputAction,
+          textCapitalization: widget.textCapitalization,
           key: widget.textKey,
           decoration: InputDecoration(
             hintText: widget.hintText,
             labelText: widget.labelText,
             icon: (widget.icon!=null) ? widget.icon : null,
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-            counterStyle: TextStyle(height: double.minPositive,),
+            border: (widget.useStyle) ? InputBorder.none : null,
+            contentPadding: (widget.useStyle) ? EdgeInsets.fromLTRB(0, 0, 0, 0) : null, 
+            counterStyle:  (widget.useStyle) ? TextStyle(height: double.minPositive) : null,
           ),
-          style: TextStyle(
-            fontSize: 18
-          ),
+          style: 
+          (widget.useStyle)
+          ?
+            TextStyle(
+              fontSize: 18
+            )
+          :
+          null,
           obscureText: widget.obscureText,
           validator: widget.validator,
           onSaved: widget.onSaved,

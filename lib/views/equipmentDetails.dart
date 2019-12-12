@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:qrcode/widgets/customTextFormField.dart';
 import '../bloc/blocEquipment.dart';
 import '../classes/equipment.dart';
 import '../methods/qrCode.dart';
@@ -30,37 +31,44 @@ class EquipmentDetails extends StatelessWidget{
       body: StreamBuilder(
         stream: bloc.outEquipmentController,
         builder: (context, snapshot){
-          if (snapshot.hasData && snapshot.hasError)
-            return BodyError();
-          else
           if (snapshot.hasData)
             return Body(snapshot.data);
+          if (snapshot.hasError)
+            return BodyError();
           else
             return Container();
         },
       ),
-      floatingActionButton: SpeedDial(
-        animatedIcon: AnimatedIcons.menu_close,
-        overlayOpacity: 0.1,
-        overlayColor: Theme.of(context).primaryColor,
-        tooltip: "Ações",
-        children: [
-          SpeedDialChild(
-            label: "Nova manutenção",
-            labelBackgroundColor: Theme.of(context).accentColor,
-            child: Icon(Icons.border_color),
-            onTap: () => newLogDialog(context).then((data){bloc.newMaintenance(data);})
-          ),
-          SpeedDialChild(
-            label: "Compartilhar",
-            labelBackgroundColor: Theme.of(context).accentColor,
-            child: Icon(Icons.share),
-            onTap: (){
-              final QRCodeMethods qrCode = QRCodeMethods();
-              qrCode.captureAndSharePng(Body.getKey(), "qrCode.png", Body.equipment.description);
-            },
-          )
-        ],
+      floatingActionButton: StreamBuilder(
+        stream: bloc.outEquipmentController,
+        builder: (context, snapshot){
+          if (!snapshot.hasData)
+            return Container();
+
+          return SpeedDial(
+            animatedIcon: AnimatedIcons.menu_close,
+            overlayOpacity: 0.1,
+            overlayColor: Theme.of(context).primaryColor,
+            tooltip: "Ações",
+            children: [
+              SpeedDialChild(
+                label: "Nova manutenção",
+                labelBackgroundColor: Theme.of(context).accentColor,
+                child: Icon(Icons.border_color),
+                onTap: () => newLogDialog(context).then((data){bloc.newMaintenance(data);})
+              ),
+              SpeedDialChild(
+                label: "Compartilhar",
+                labelBackgroundColor: Theme.of(context).accentColor,
+                child: Icon(Icons.share),
+                onTap: (){
+                  final QRCodeMethods qrCode = QRCodeMethods();
+                  qrCode.captureAndSharePng(Body.getKey(), "qrCode.png", Body.equipment.description);
+                },
+              )
+            ],
+          );
+        },
       )
     );
   }
@@ -80,25 +88,27 @@ class EquipmentDetails extends StatelessWidget{
           title: Text("Manutenção"),
           content: Container(
             height: MediaQuery.of(context).size.height*0.4,
-            child: Column(
-              children: <Widget>[
-                TextField(
-                  textCapitalization: TextCapitalization.words,
-                  decoration: InputDecoration(
-                    labelText: "Técnico"
-                  ),
-                  controller: cTechnician,
-                  maxLength: 100,
+            child: SingleChildScrollView(
+              child: Form(
+                child: Column(
+                  children: <Widget>[
+                    CTextFormField(
+                      textCapitalization: TextCapitalization.words,
+                      textInputAction: TextInputAction.next,
+                      labelText: "Técnico",
+                      controller: cTechnician,
+                      maxLength: 100,
+                    ),
+                    CTextFormField(
+                      textCapitalization: TextCapitalization.sentences,
+                      textInputAction: TextInputAction.done,
+                      labelText: "Observação",
+                      controller: cDescription,
+                      maxLength: 500,
+                    ),
+                  ],
                 ),
-                TextField(
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: InputDecoration(
-                    labelText: "Observação"
-                  ),
-                  controller: cDescription,
-                  maxLength: 500,
-                ),
-              ],
+              ),
             ),
           ),
           actions: <Widget>[
