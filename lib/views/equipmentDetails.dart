@@ -93,6 +93,7 @@ class EquipmentDetails extends StatelessWidget{
                 child: Column(
                   children: <Widget>[
                     CTextFormField(
+                      useStyle: false,
                       textCapitalization: TextCapitalization.words,
                       textInputAction: TextInputAction.next,
                       labelText: "Técnico",
@@ -100,6 +101,7 @@ class EquipmentDetails extends StatelessWidget{
                       maxLength: 100,
                     ),
                     CTextFormField(
+                      useStyle: false,
                       textCapitalization: TextCapitalization.sentences,
                       textInputAction: TextInputAction.done,
                       labelText: "Observação",

@@ -21,7 +21,7 @@ class CTextFormField extends StatefulWidget {
     this.enabled = true,
     this.textInputAction,
     this.focusNode,
-    this.useStyle = false,
+    this.useStyle = true,
     this.textCapitalization = TextCapitalization.none});
 
   final Key textKey;
@@ -67,21 +67,49 @@ class _CTextFormFieldState extends State<CTextFormField> {
   @override
   Widget build(BuildContext context) {
     final bloc = BlocProvider.getBloc<BlocThemes>();
-    return Card(
-      elevation: (widget.useStyle) ? (widget.enabled ? 6 : 1) : 0,
-      margin: widget.margin,
-      shape: 
-      (widget.useStyle)
-      ?
-        RoundedRectangleBorder(
+
+    if (widget.useStyle){
+      return Card(
+        elevation: (widget.enabled ? 6 : 1),
+        margin: widget.margin,
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(90),
+        ),
+        color: widget.enabled ? null : (bloc.selectedTheme()==ApplicationTheme.lightTheme ? Colors.grey[300] : Colors.grey[700]),
+        child: Container(
+          padding: EdgeInsets.fromLTRB((widget.removeLeftMargin) ? 0 : 20, 10, 20, 5),
+          child: TextFormField(
+            initialValue: widget.initialValue,
+            maxLength: widget.maxLength,
+            controller: widget.controller,
+            enabled: widget.enabled,
+            focusNode: node,
+            keyboardType: widget.keyboardType,
+            textInputAction: widget.textInputAction,
+            textCapitalization: widget.textCapitalization,
+            key: widget.textKey,
+            decoration: InputDecoration(
+              hintText: widget.hintText,
+              labelText: widget.labelText,
+              icon: (widget.icon!=null) ? widget.icon : null,
+              border: InputBorder.none,
+              contentPadding:EdgeInsets.fromLTRB(0, 0, 0, 0), 
+              counterStyle:TextStyle(height: double.minPositive),
+            ),
+            style: TextStyle(
+              fontSize: 18
+            ),
+            obscureText: widget.obscureText,
+            validator: widget.validator,
+            onSaved: widget.onSaved,
+            onChanged: widget.onChanged,
+            onFieldSubmitted: ((widget.onFieldSubmited==null)&&(widget.textInputAction==TextInputAction.next)) ? (String value){FocusScope.of(context).nextFocus();} : widget.onFieldSubmited,
+          ),
         )
-      :
-        null
-      ,
-      color: widget.enabled ? null : (bloc.selectedTheme()==ApplicationTheme.lightTheme ? Colors.grey[300] : Colors.grey[700]),
-      child: Container(
-        padding: (widget.useStyle) ? EdgeInsets.fromLTRB((widget.removeLeftMargin) ? 0 : 20, 10, 20, 5) : null,
+      );
+    }
+    else{
+      return Container(
         child: TextFormField(
           initialValue: widget.initialValue,
           maxLength: widget.maxLength,
@@ -96,25 +124,14 @@ class _CTextFormFieldState extends State<CTextFormField> {
             hintText: widget.hintText,
             labelText: widget.labelText,
             icon: (widget.icon!=null) ? widget.icon : null,
-            border: (widget.useStyle) ? InputBorder.none : null,
-            contentPadding: (widget.useStyle) ? EdgeInsets.fromLTRB(0, 0, 0, 0) : null, 
-            counterStyle:  (widget.useStyle) ? TextStyle(height: double.minPositive) : null,
           ),
-          style: 
-          (widget.useStyle)
-          ?
-            TextStyle(
-              fontSize: 18
-            )
-          :
-          null,
           obscureText: widget.obscureText,
           validator: widget.validator,
           onSaved: widget.onSaved,
           onChanged: widget.onChanged,
           onFieldSubmitted: ((widget.onFieldSubmited==null)&&(widget.textInputAction==TextInputAction.next)) ? (String value){FocusScope.of(context).nextFocus();} : widget.onFieldSubmited,
         ),
-      )
-    );
+      );
+    }
   }
 }

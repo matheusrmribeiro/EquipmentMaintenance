@@ -11,7 +11,7 @@ class CDropdownButtonFormField<T> extends StatelessWidget {
     this.hint,
     this.margin,
     this.items,
-    this.useStyle = false});
+    this.useStyle = true});
 
   final Key textKey;
   final String labelText;
@@ -27,35 +27,55 @@ class CDropdownButtonFormField<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 6,
-      margin: margin,
-      shape: 
-      (useStyle)
-      ?
-        RoundedRectangleBorder(
+    if (useStyle){
+      return Card(
+        elevation: 6,
+        margin: margin,
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(90),
+        ),
+        child: Container(
+          padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
+          child: DropdownButtonFormField<T>(
+            decoration: InputDecoration(
+              labelText: labelText,
+              icon: (icon!=null) ? icon : null,
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              counterStyle: TextStyle(height: double.minPositive,),
+            ),
+            hint: hint,
+            value: value,
+            items: items,
+            onChanged: onChanged,
+            validator: validator,
+            onSaved: onSaved,
+          )
         )
-      :
-        null,
-      child: Container(
-        padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
-        child: DropdownButtonFormField<T>(
-          decoration: InputDecoration(
-            labelText: labelText,
-            icon: (icon!=null) ? icon : null,
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-            counterStyle: TextStyle(height: double.minPositive,),
-          ),
-          hint: hint,
-          value: value,
-          items: items,
-          onChanged: onChanged,
-          validator: validator,
-          onSaved: onSaved,
+      );
+    }
+    else{
+      return Container(
+        margin: margin,
+        child: Container(
+          padding: EdgeInsets.fromLTRB(20, 10, 20, 5),
+          child: DropdownButtonFormField<T>(
+            decoration: InputDecoration(
+              labelText: labelText,
+              icon: (icon!=null) ? icon : null,
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+              counterStyle: TextStyle(height: double.minPositive,),
+            ),
+            hint: hint,
+            value: value,
+            items: items,
+            onChanged: onChanged,
+            validator: validator,
+            onSaved: onSaved,
+          )
         )
-      )
-    );
+      );
+    }
   }
 }
