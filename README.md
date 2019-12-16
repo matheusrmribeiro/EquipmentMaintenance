@@ -24,3 +24,10 @@
     1. Choose a nickname to your project.
 1. Download the .JSON file that firebase provided.
 1. Put the .JSON file inside the folder ([android\app](https://github.com/matheusrmribeiro/EquipmentMaintenance/tree/master/android/app))
+
+## Screens
+
+<img src="prints/HomeDark.jpeg?raw=true" width="49.5%"/> <img src="prints/HomeLight.jpeg?raw=true" width="49.5%" /> 
+<img src="prints/LoginDark.jpeg?raw=true" width="49.5%" /> <img src="prints/LoginLight.jpeg?raw=true" width="49.5%" /> 
+<img src="prints/DetalhesDark.jpeg?raw=true" width="49.5%" /> <img src="prints/MenusDark.jpeg?raw=true" width="49.5%" /> 
+<img src="prints/QRCodeDark.jpeg?raw=true" width="49.5%" /> <img src="prints/ShareDark.jpeg?raw=true" width="49.5%" /> 
