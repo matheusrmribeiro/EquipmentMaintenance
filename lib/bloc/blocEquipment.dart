@@ -13,7 +13,8 @@ class BlocEquipment extends BlocBase {
 
   BlocEquipment() {
     _equipmentController.stream.listen((value){
-      inNextmaintenance.add(value.nextMaintenance);
+      if (value!=null)
+        inNextmaintenance.add(value.nextMaintenance);
     });
   }
 
@@ -46,7 +47,7 @@ class BlocEquipment extends BlocBase {
         "inPeriod": inPeriod
       };
 
-      DocumentReference docResult = await Firestore.instance.collection("maintenanceLog").add(newMaintenance);
+      await Firestore.instance.collection("maintenanceLog").add(newMaintenance);
     }
   }
 

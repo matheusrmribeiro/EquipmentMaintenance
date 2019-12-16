@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
 
-List<String> states = ["São Paulo"];
-List<String> cities = ["Bariri", "Jaú", "Bauru", "Dois Córregos", "Boracéia", "Perdeneiras", "Barra Bonita"];
-
-BuildContext mainContext;
-
 class PeriodoDia{
   String descricao() {
     DateTime dateTime = DateTime.now();
@@ -23,5 +18,15 @@ class PeriodoDia{
       return "Vai dormir";
     else
       return "";
+  }
+}
+
+class Navigation {
+  void navigaTo(context, menu, {VoidCallback method}) async {
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => menu,)).then((result){
+        if(method != null)
+          method();
+      }
+    );
   }
 }

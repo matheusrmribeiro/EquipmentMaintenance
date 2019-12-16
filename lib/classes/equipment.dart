@@ -9,7 +9,6 @@ class Equipment{
   String room;
   int maintenancePeriod;
   DateTime nextMaintenance;
-  Color _status;
   String _statusInfo;
   
   Map<String, dynamic> toJson({bool removeId = false, bool useTimestamp = false}) {

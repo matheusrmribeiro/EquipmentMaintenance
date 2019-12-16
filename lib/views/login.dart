@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'registerUser.dart';
 import '../bloc/blocAuth.dart';
 import '../bloc/blocLogin.dart';
-import '../methods.dart';
+import '../globals.dart';
 import '../widgets/customTextFormField.dart';
 
 final formKey = GlobalKey<FormState>();

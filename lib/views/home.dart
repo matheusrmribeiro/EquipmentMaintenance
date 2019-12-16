@@ -4,13 +4,13 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:qrcode/bloc/blocAuth.dart';
-import 'package:qrcode/bloc/blocEquipment.dart';
-import 'package:qrcode/classes/equipment.dart';
-import 'package:qrcode/globals.dart';
-import 'package:qrcode/methods.dart';
-import 'package:qrcode/views/equipmentDetails.dart';
-import 'package:qrcode/views/qrCodeGenerator.dart';
+import '../bloc/blocAuth.dart';
+import '../bloc/blocThemes.dart';
+import '../bloc/blocEquipment.dart';
+import '../classes/equipment.dart';
+import '../globals.dart';
+import 'equipmentDetails.dart';
+import 'qrCodeGenerator.dart';
 import 'settings.dart';
 
 class Home extends StatelessWidget{
@@ -213,6 +213,10 @@ class EquipmentItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _equipment.snapToClass(_item);
+    
+    final bloc = BlocProvider.getBloc<BlocThemes>();
+    final titleColor = (bloc.selectedTheme()==ApplicationTheme.lightTheme) ? Colors.grey[700] : Colors.grey[300];
+    final bodyColor = (bloc.selectedTheme()==ApplicationTheme.lightTheme) ? Colors.grey[500] : Colors.grey[400];
 
     return Dismissible(
       key: Key(DateTime.now().millisecondsSinceEpoch.toString()),
@@ -256,11 +260,11 @@ class EquipmentItem extends StatelessWidget {
                               Text(_equipment.name, 
                                 style: TextStyle(
                                   fontSize: 20, 
-                                  color: Colors.grey[700],
+                                  color: titleColor,
                                   fontWeight: FontWeight.bold)),
                               Container(height: 5,),
-                              Text("${_equipment.floor}º andar, sala ${_equipment.room}"),
-                              Text("Próxima manutenção: ${formatDate(_equipment.nextMaintenance, ["dd", "/", "mm", "/", "yyyy"])}"),
+                              Text("${_equipment.floor}º andar, sala ${_equipment.room}", style: TextStyle(color: bodyColor)),
+                              Text("Próxima manutenção: ${formatDate(_equipment.nextMaintenance, ["dd", "/", "mm", "/", "yyyy"])}", style: TextStyle(color: bodyColor)),
                             ],
                           ),
                         ),
