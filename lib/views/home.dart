@@ -128,21 +128,22 @@ class Header extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Row(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(periodo.descricao()+ ", ",
                         style: TextStyle(
                           color: Colors.grey[200],
-                          fontSize: 25,
+                          fontSize: 20,
                         ),
                       ),
                       StreamBuilder(
                         stream: bloc.outAuthStatus,
                         builder: (context, snapshot){
-                          return Text(bloc.currentUser.nickname??"Usuário",
+                          return Text(bloc.currentUser.name??"Usuário",
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 25,
+                              fontSize: 20,
                             ),
                           );
                         },
