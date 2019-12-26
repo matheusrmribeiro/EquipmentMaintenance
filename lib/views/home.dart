@@ -107,7 +107,7 @@ class Home extends StatelessWidget{
 class Header extends StatelessWidget {
   final bloc = BlocProvider.getBloc<BlocAuth>();
   final PeriodoDia periodo = PeriodoDia();
-
+  
   @override
   Widget build(BuildContext context) {
     return Container(

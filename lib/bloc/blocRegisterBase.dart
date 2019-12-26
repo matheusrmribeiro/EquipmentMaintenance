@@ -8,7 +8,7 @@ class BlocRegisterBase extends BlocBase {
   String url;
   final dataObject=null;
   TabController tabController;
-  DefaultResponse registerState = DefaultResponse(code: "OK", value: "Inserido com sucesso!");
+  DefaultResponse registerState = DefaultResponse(code: "ERROR", value: "Inserido com sucesso!");
 
   BlocRegisterBase(){
     _tabControllIndex.stream.listen((data){
@@ -39,8 +39,6 @@ class BlocRegisterBase extends BlocBase {
   final BehaviorSubject<DefaultResponse> _error = BehaviorSubject<DefaultResponse>();
   Stream<DefaultResponse> get outError => _error.stream;
   Sink<DefaultResponse> get inError => _error.sink;
-
-  void beforeSave(){}
 
   Future<DefaultResponse> save() async {
     if (registerState.code=="ERROR")

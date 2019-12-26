@@ -62,7 +62,7 @@ class FirebaseConnection{
     }    
   }
 
-  Future<String> currentUser() async {
+  Future<String> currentUserUID() async {
     FirebaseUser user = await _firebaseAuth.currentUser();
     return user?.uid;
   }

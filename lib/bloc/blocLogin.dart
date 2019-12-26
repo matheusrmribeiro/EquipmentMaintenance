@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:qrcode/bloc/blocAuth.dart';
 import 'package:rxdart/rxdart.dart';
+import '../bloc/blocAuth.dart';
 
 enum SubmitStatus{
   ssNormal,

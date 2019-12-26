@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:qrcode/api/firebaseConnection.dart';
-import 'package:qrcode/classes/user.dart';
 import 'package:rxdart/rxdart.dart';
+import '../api/firebaseConnection.dart';
+import '../classes/user.dart';
 
 enum AuthStatus {
   notDetermined,
@@ -14,9 +14,8 @@ class BlocAuth extends BlocBase {
   final FirebaseConnection firebase = FirebaseConnection();
   User currentUser = User();
 
-
   BlocAuth(){
-    firebase.currentUser().then((userId) async {
+    firebase.currentUserUID().then((userId) async {
       currentUser = await firebase.getCurrentUserObject();
       inAuthStatus.add((userId == null) ? AuthStatus.notSignedIn : AuthStatus.signedIn);
     });

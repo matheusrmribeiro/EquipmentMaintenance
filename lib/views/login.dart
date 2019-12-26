@@ -46,7 +46,7 @@ class LoginPage extends StatelessWidget {
               margin: EdgeInsets.only(left: 40, bottom: 55),
               child: Text("LogScan", 
                 style: TextStyle(
-                  color: Colors.red,//Theme.of(context).primaryColor, 
+                  color: Colors.red, 
                   fontSize: 50.0,
                   fontFamily: "RobotoMono",
                   fontWeight: FontWeight.w500

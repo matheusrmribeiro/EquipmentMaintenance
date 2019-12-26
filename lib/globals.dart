@@ -23,7 +23,7 @@ class PeriodoDia{
 
 class Navigation {
   void navigaTo(context, menu, {VoidCallback method}) async {
-    await Navigator.push(context, MaterialPageRoute(builder: (context) => menu,)).then((result){
+    await Navigator.push(context, MaterialPageRoute(builder: (context) => menu)).then((result){
         if(method != null)
           method();
       }

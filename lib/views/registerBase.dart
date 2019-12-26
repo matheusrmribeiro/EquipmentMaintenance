@@ -1,6 +1,6 @@
+import 'package:flutter/material.dart';
 import '../classes/defaultResponse.dart';
 import '../classes/registerSteps.dart';
-import 'package:flutter/material.dart';
 
 class BaseRegister extends StatefulWidget{
   BaseRegister({@required this.title, this.bloc, this.steps});
@@ -100,9 +100,8 @@ class _BaseRegisterState extends State<BaseRegister> with SingleTickerProviderSt
   }
 
   Widget buildBackButton(tabControllerIndex){
-    if (tabControllerIndex<=0) {
+    if (tabControllerIndex<=0)
       return Container();
-    } 
     else{
       return RaisedButton(
         child: Text("Voltar"),
@@ -127,8 +126,6 @@ class _BaseRegisterState extends State<BaseRegister> with SingleTickerProviderSt
             color: Theme.of(context).primaryColor,
             child: (tabControllerIndex>=controller.length-1) ? Text("Finalizar") : Text("Próximo"),
             onPressed: (){
-              // widget.bloc.inError.add(DefaultResponse(code: "ERROR", value:"TESTE"));
-              // return;
               FocusScope.of(context).requestFocus(FocusNode());
               var form = widget.steps[controller.index].formKey.currentState;
               if (form.validate()) {
@@ -152,9 +149,8 @@ class _BaseRegisterState extends State<BaseRegister> with SingleTickerProviderSt
     await widget.bloc.save();
     if (widget.bloc.registerState.code=="OK")
       Navigator.pop(context, true);
-    else{
+    else
       widget.bloc.inTabControllIndex.add(0);
-    }
   }
 }
 

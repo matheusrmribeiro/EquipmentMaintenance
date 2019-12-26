@@ -41,10 +41,6 @@ class BlocRegisterUser extends BlocRegisterBase {
   }
 
   @override
-  void beforeSave(){
-  }
-
-  @override
   Future<DefaultResponse> save() async {
     final api = FirebaseConnection();
     
@@ -70,7 +66,7 @@ class BlocRegisterUser extends BlocRegisterBase {
     else
       await Firestore.instance.collection("users").document(dataObject.id).setData(dataObject.toJson(removeId: true));
 
-    super.save();
+    return super.save();
   }
 
   final BehaviorSubject<User> _userController = BehaviorSubject<User>();
